@@ -1,1 +1,1 @@
-DATA_DIR = "./examples/data/"
+DATA_DIR = "../examples/data/"

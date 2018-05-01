@@ -13,7 +13,7 @@ class SkelVector(np.ndarray):
     def to_index(self, key):
         if isinstance(key, int):
             if key < 0:
-                return len(self) - key
+                return len(self) + key
             else:
                 return key
         elif isinstance(key, str):
@@ -33,10 +33,10 @@ class SkelVector(np.ndarray):
         else:
             return np.ndarray.__getitem__(self, key)
 
-    def __getslice__(self, start, end):
-        ret = np.ndarray.__getslice__(self, start, end)
-        ret.keys = self.keys[start:end]
-        return ret
+    # def __getslice__(self, start, end):
+    #     ret = np.ndarray.__getslice__(self, start, end)
+    #     ret.keys = self.keys[start:end]
+    #     return ret
 
     def __setitem__(self, key, value):
         if isinstance(key, str):

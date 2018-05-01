@@ -38,6 +38,7 @@ void SKEL(getVelocities)(int wid, int skid, double* outv, int ndofs);
 void SKEL(setVelocities)(int wid, int skid, double* inv, int ndofs);
 void SKEL(getAccelerations)(int wid, int skid, double* outv, int ndofs);
 void SKEL(setForces)(int wid, int skid, double* inv, int ndofs);
+void SKEL(setAccelerations)(int wid, int skid, double* inv, int ndofs);
 
 ////////////////////////////////////////
 // Skeleton::Difference Functions
@@ -68,6 +69,7 @@ void SKEL(getCOMLinearAcceleration)(int wid, int skid, double outv3[3]);
 void SKEL(getMassMatrix)(int wid, int skid, double* outm, int nrows, int ncols);
 void SKEL(getCoriolisAndGravityForces)(int wid, int skid, double* outv, int ndofs);
 void SKEL(getConstraintForces)(int wid, int skid, double* outv, int ndofs);
+void SKEL(getInvMassMatrix)(int wid, int skid, double* outm, int nrows, int ncols);
 
 
 #endif // #ifndef PYDART2_SKELETON_API_H

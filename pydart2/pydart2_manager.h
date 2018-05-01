@@ -33,6 +33,7 @@ public:
     static dart::dynamics::SkeletonPtr skeleton(int wid, int skid);
     static int createWorld(double timestep);
     static int createWorldFromSkel(const char* const path);
+    static int createWorldFromSkelXML(const std::string &xmlstr);
     static void destroyWorld(int id);
     static bool g_verbose;
 protected:

@@ -24,6 +24,9 @@ def create_world(step, skel_path=None):
 
 
 class World(object):
+    """
+    :type skeletons: list[Skeleton]
+    """
     DART_COLLISION_DETECTOR, \
         FCL_COLLISION_DETECTOR, \
         BULLET_COLLISION_DETECTOR, \
@@ -31,14 +34,20 @@ class World(object):
 
     CLASS_SKELETON = Skeleton  # Modify this for inherited skeleton class
 
-    def __init__(self, step, skel_path=None):
+    def __init__(self, step, skel_path=None, xmlstr=False):
         self.skeletons = list()
         self.control_skel = None
         self.recording = None
 
-        if skel_path is not None:
+        if skel_path is not None and not xmlstr:
             skel_path = os.path.realpath(skel_path)
             self.id = papi.createWorldFromSkel(skel_path)
+            self.set_time_step(step)
+            nskels = self.num_skeletons()
+            for i in range(nskels):
+                self.add_skeleton_from_id(i)
+        elif skel_path is not None and xmlstr:
+            self.id = papi.createWorldFromSkelXML(skel_path)
             self.set_time_step(step)
             nskels = self.num_skeletons()
             for i in range(nskels):

@@ -12,6 +12,18 @@ from .shapenode import ShapeNode
 
 
 class BodyNode(object):
+    """
+    :type skeleton: Skeleton
+    :type _id: int
+    :type name: str
+    :type parent_bodynode: BodyNode
+    :type child_bodynodes: list[BodyNode]
+    :type parent_joint: Joint
+    :type child_joints: list[Joint]
+    :type dependent_dofs: list[Dof]
+    :type markers: list[Marker]
+    :type shapenodes: list[ShapeNode]
+    """
     def __init__(self, _skel, _id):
         self.skeleton = _skel
         self._id = _id
@@ -255,12 +267,74 @@ class BodyNode(object):
         return (Tinv.dot(x_))[:3]
 
     def world_transform(self, ):
+        """Get the transform of this Frame with respect to the World Frame.
+        :rtype: np.ndarray
+        """
         return papi.bodynode__getWorldTransform(self.wid, self.skid, self.id)
 
     def relative_transform(self, ):
+        """
+        Get the transform of this BodyNode with respect to its parent BodyNode, which is also its parent Frame.
+        Implements dart::dynamics::Frame.
+        :rtype: np.ndarray
+        """
         return papi.bodynode__getRelativeTransform(self.wid,
                                                    self.skid,
                                                    self.id)
+
+
+########################################
+# Velocities and Accelerations Functions
+    def world_angular_velocity(self):
+        """
+        Get angular velocity of this BodyNode expressed world frame
+        :rtype: np.ndarray
+        """
+        return papi.bodynode__getAngularVelocity(self.wid, self.skid, self.id)
+
+    def world_linear_velocity(self, offset=None):
+        """
+        Get angular velocity of this BodyNode expressed world frame
+        :rtype: np.ndarray
+        """
+        if offset is None:
+            offset = np.zeros(3)
+        return papi.bodynode__getLinearVelocity(self.wid, self.skid, self.id, offset)
+
+    def world_spatial_velocity(self, offset=None):
+        """
+        Get angular velocity of this BodyNode expressed world frame
+        :rtype: np.ndarray
+        """
+        if offset is None:
+            offset = np.zeros(3)
+        return papi.bodynode__getSpatialVelocity(self.wid, self.skid, self.id, offset)
+
+    def world_angular_acceleration(self):
+        """
+        Get angular velocity of this BodyNode expressed world frame
+        :rtype: np.ndarray
+        """
+        return papi.bodynode__getAngularAcceleration(self.wid, self.skid, self.id)
+
+    def world_linear_acceleration(self, offset=None):
+        """
+        Get angular velocity of this BodyNode expressed world frame
+        :rtype: np.ndarray
+        """
+        if offset is None:
+            offset = np.zeros(3)
+        return papi.bodynode__getLinearAcceleration(self.wid, self.skid, self.id, offset)
+
+    def world_spatial_acceleration(self, offset=None):
+        """
+        Get angular velocity of this BodyNode expressed world frame
+        :rtype: np.ndarray
+        """
+        if offset is None:
+            offset = np.zeros(3)
+        return papi.bodynode__getSpatialAcceleration(self.wid, self.skid, self.id, offset)
+
 
 ########################################
 # Torque Functions
@@ -305,6 +379,14 @@ class BodyNode(object):
 ########################################
 # Jacobian Functions
     def jacobian(self, offset=None, full=True):
+        """
+        Return the generalized Jacobian targeting the origin of this BodyNode.
+
+        The Jacobian is expressed in the Frame of this BodyNode.
+        :type offset: np.ndarray
+        :type full: bool
+        :rtype: np.ndarray
+        """
         offset = np.zeros(3) if offset is None else offset
         J = np.zeros((6, len(self.dependent_dofs)))
         papi.bodynode__getJacobian(self.wid,
@@ -315,6 +397,13 @@ class BodyNode(object):
         return self.expand_jacobian(J) if full else J
 
     def linear_jacobian(self, offset=None, full=True):
+        """
+        Return the linear Jacobian targeting an offset within the Frame of this BodyNode.
+        Expressed in the world Frame
+        :type offset: np.ndarray
+        :type full: bool
+        :rtype: np.ndarray
+        """
         offset = np.zeros(3) if offset is None else offset
         J = np.zeros((3, len(self.dependent_dofs)))
         papi.bodynode__getLinearJacobian(self.wid,
@@ -325,11 +414,27 @@ class BodyNode(object):
         return self.expand_jacobian(J) if full else J
 
     def angular_jacobian(self, full=True):
+        """
+        Return the angular Jacobian targeting the origin of this BodyNode
+        within the Frame of this BodyNode.
+        Expressed in the worldFrame
+        :type full: bool
+        :rtype: np.ndarray
+        """
         J = np.zeros((3, len(self.dependent_dofs)))
         papi.bodynode__getAngularJacobian(self.wid, self.skid, self.id, J)
         return self.expand_jacobian(J) if full else J
 
     def world_jacobian(self, offset=None, full=True):
+        """
+        Return the generalized Jacobian targeting an offset in this JacobianNode.
+
+        The offset is expected in coordinates of this BodyNode Frame. The Jacobian is expressed in the World Frame.
+        angular first, linear followed
+        :type offset: np.ndarray
+        :type full: bool
+        :rtype: np.ndarray
+        """
         offset = np.zeros(3) if offset is None else offset
         J = np.zeros((6, len(self.dependent_dofs)))
         papi.bodynode__getWorldJacobian(self.wid,
@@ -352,6 +457,16 @@ class BodyNode(object):
     def angular_jacobian_deriv(self, full=True):
         J = np.zeros((3, len(self.dependent_dofs)))
         papi.bodynode__getAngularJacobianDeriv(self.wid, self.skid, self.id, J)
+        return self.expand_jacobian(J) if full else J
+
+    def world_jacobian_classic_deriv(self, offset=None, full=True):
+        offset = np.zeros(3) if offset is None else offset
+        J = np.zeros((6, len(self.dependent_dofs)))
+        papi.bodynode__getJacobianClassicDeriv(self.wid,
+                                               self.skid,
+                                               self.id,
+                                               offset,
+                                               J)
         return self.expand_jacobian(J) if full else J
 
     def expand_jacobian(self, jacobian):

@@ -24,6 +24,15 @@ from .marker import Marker
 
 
 class Skeleton(object):
+    """
+    :type dofs: list[Dof]
+    :type name_to_dof: dict[str, Dof]
+    :type joints: list[Joint | BallJoint | UniversalJoint | RevoluteJoint | FreeJoint]
+    :type name_to_joint: dict[str, Joint | BallJoint | UniversalJoint | RevoluteJoint | FreeJoint]
+    :type bodynodes: list[BodyNode]
+    :type name_to_body: dict[str, BodyNode]
+    :type makers: list[Marker]
+    """
     def __init__(self, _world, _filename=None,
                  _id=None, _friction=None, ):
         self.world = _world
@@ -36,7 +45,17 @@ class Skeleton(object):
             self.id = _id
 
         self.controller = None
+
+        self.dofs = None  # type: list[Dof]
+        self.joints = None  # type: list[Joint | BallJoint | UniversalJoint | RevoluteJoint | FreeJoint]
+        self.bodynodes = None  # type: list[BodyNode]
+        self.markers = None  # type: list[Marker]
+        self.name_to_body = None  # type: dict[str, BodyNode]
+        self.name_to_dof = None  # type: dict[str, Dof]
+        self.name_to_joint = None   # type: dict[str, Joint | BallJoint | UniversalJoint | RevoluteJoint | FreeJoint]
+
         self.build()
+
 
     def build(self, ):
         # Initialize dofs
@@ -162,6 +181,10 @@ class Skeleton(object):
     def ddq(self):
         return self.accelerations()
 
+    def set_accelerations(self, _qddot):
+        # self._tau = _tau
+        papi.skeleton__setAccelerations(self.world.id, self.id, _qddot)
+
     def states(self):
         return np.concatenate((self.positions(), self.velocities()))
 
@@ -196,10 +219,18 @@ class Skeleton(object):
     def M(self):
         return self.mass_matrix()
 
+    def inv_mass_matrix(self):
+        invM = np.zeros((self.ndofs, self.ndofs))
+        papi.skeleton__getInvMassMatrix(self.world.id, self.id, invM)
+        return invM
+
+    @property
+    def invM(self):
+        return self.inv_mass_matrix()
+
     def coriolis_and_gravity_forces(self):
         return papi.skeleton__getCoriolisAndGravityForces(self.world.id,
                                                           self.id, self.ndofs)
-
     @property
     def c(self):
         return self.coriolis_and_gravity_forces()
@@ -228,15 +259,24 @@ class Skeleton(object):
                                                   self.id, self.ndofs)
 
     def bodynode(self, query):
+        """
+
+        :param query:
+        :rtype: BodyNode
+        """
         if isinstance(query, string_types):
             return self.name_to_body[query]
         elif isinstance(query, int):
-            return self.bodies[query]
+            return self.bodynodes[query]
         else:
             print('Cannot find body. query = %s' % str(query))
             return None
 
     def root_bodynodes(self, ):
+        """
+
+        :rtype: list[BodyNode]
+        """
         return [body for body in self.bodynodes
                 if body.parent_bodynode is None]
 
@@ -247,10 +287,15 @@ class Skeleton(object):
         return self.name_to_body[_name].id
 
     def body(self, query):
+        """
+
+        :param query:
+        :rtype: BodyNode
+        """
         if isinstance(query, string_types):
             return self.name_to_body[query]
         elif isinstance(query, int):
-            return self.bodies[query]
+            return self.bodynodes[query]
         else:
             print('Cannot find body. query = %s' % str(query))
             return None

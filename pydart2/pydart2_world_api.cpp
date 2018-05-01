@@ -29,6 +29,13 @@ int createWorldFromSkel(const char* const path) {
     return wid;
 }
 
+int createWorldFromSkelXML(const char* const _xmlstr) {
+    std::string xmlstr(_xmlstr);
+    int wid = Manager::createWorldFromSkelXML(xmlstr);
+    // MSG << " [pydart2_api] # Skeletons in " << path << " = " << numSkeletons(wid) << "\n";
+    return wid;
+}
+
 void destroyWorld(int wid) {
     Manager::destroyWorld(wid);
 }

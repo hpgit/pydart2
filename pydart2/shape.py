@@ -61,6 +61,20 @@ class Shape(object):
                                    self.bid, self.id)
 
     def type_id(self, ):
+        """
+        if (shape->is<SphereShape>()) return 0;
+        if (shape->is<BoxShape>()) return 1;
+        if (shape->is<EllipsoidShape>()) return 2;
+        if (shape->is<CylinderShape>()) return 3;
+        if (shape->is<CapsuleShape>()) return 4;
+        if (shape->is<ConeShape>()) return 5;
+        if (shape->is<PlaneShape>()) return 6;
+        if (shape->is<MultiSphereShape>()) return 7;
+        if (shape->is<MeshShape>()) return 8;
+        if (shape->is<SoftMeshShape>()) return 9;
+        if (shape->is<LineSegmentShape>()) return 10;
+        :return:
+        """
         return papi.shape__getTypeID(self.wid, self.skid,
                                      self.bid, self.id)
 

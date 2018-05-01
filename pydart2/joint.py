@@ -7,10 +7,15 @@ from __future__ import absolute_import
 # Author(s): Sehoon Ha <sehoon.ha@disneyresearch.com>
 # Disney Research Robotics Group
 from . import pydart2_api as papi
+import numpy as np
 
 
 class Joint(object):
     """
+    :type skeleton: Skeleton
+    :type parent_bodynode: BodyNode
+    :type child_bodynode: BodyNode
+    :type dofs: list[Dof]
     """
     FORCE, PASSIVE, SERVO, ACCELERATION, VELOCITY, LOCKED = list(range(6))
 
@@ -88,6 +93,24 @@ class Joint(object):
 
 ########################################
 # Joint::Parent and child functions
+    def get_world_frame_after_transform(self, ):
+        T0 = self.child_bodynode.transform()
+        T1 = self.transform_from_child_body_node()
+        T = T0.dot(T1)
+        return T
+
+    def get_world_frame_before_transform(self, ):
+        T0 = self.parent_bodynode.transform()
+        T1 = self.transform_from_parent_body_node()
+        T = T0.dot(T1)
+        return T
+
+    def orientation_in_world_frame(self, ):
+        T0 = self.child_bodynode.transform()
+        T1 = self.transform_from_child_body_node()
+        T = T0.dot(T1)
+        return T[:3, :3]
+
     def position_in_world_frame(self, ):
         T0 = self.child_bodynode.transform()
         T1 = self.transform_from_child_body_node()
@@ -99,6 +122,12 @@ class Joint(object):
 
     def child_body_node_id(self, ):
         return papi.joint__getChildBodyNode(self.wid, self.skid, self.id)
+
+    def get_local_transform(self, ):
+        jointTopBody = np.linalg.inv(self.transform_from_parent_body_node()) # type: np.ndarray
+        cBodyToJoint = self.transform_from_child_body_node() # type: np.ndarray
+        pBodyTocBody = self.child_bodynode.relative_transform() # type: np.ndarray
+        return np.dot(jointTopBody, np.dot(pBodyTocBody, cBodyToJoint))
 
     def set_transform_from_parent_body_node(self, T):
         papi.joint__setTransformFromParentBodyNode(self.wid,
@@ -121,7 +150,6 @@ class Joint(object):
         return papi.joint__getTransformFromChildBodyNode(self.wid,
                                                          self.skid,
                                                          self.id)
-
 
 ########################################
 # Joint::Limit functions
@@ -274,6 +302,18 @@ class PrismaticJoint(Joint):
     def axis(self, ):
         return papi.prismatic_joint__getAxis(self.wid, self.skid, self.id)
 
+    def axis_in_world_frame(self, ):
+        # if self.parent_bodynode:
+        #     R = self.parent_bodynode.T[:3, :3]
+        #     return R.dot(self.axis())
+        if self.child_bodynode:
+            R0 = self.child_bodynode.T[:3, :3]
+            R1 = self.transform_from_child_body_node()[:3, :3]
+            R = R0.dot(R1)
+            return R.dot(self.axis())
+        else:
+            return self.axis()
+
     def set_axis(self, _axis):
         return papi.prismatic_joint__setAxis(
             self.wid, self.skid, self.id, _axis)
@@ -291,16 +331,30 @@ class UniversalJoint(Joint):
         return papi.universal_joint__getAxis1(self.wid, self.skid, self.id)
 
     def axis1_in_world_frame(self, ):
-        R = self.parent_bodynode.T[:3, :3]
-        return R.dot(self.axis1())
+        # R = self.parent_bodynode.T[:3, :3]
+        # return R.dot(self.axis1())
+        if self.child_bodynode:
+            R0 = self.child_bodynode.T[:3, :3]
+            R1 = self.transform_from_child_body_node()[:3, :3]
+            R = R0.dot(R1)
+            return R.dot(self.axis1())
+        else:
+            return self.axis1()
 
     def set_axis1(self, _axis):
         return papi.universal_joint__setAxis1(
             self.wid, self.skid, self.id, _axis)
 
     def axis2_in_world_frame(self, ):
-        R = self.parent_bodynode.T[:3, :3]
-        return R.dot(self.axis2())
+        # R = self.parent_bodynode.T[:3, :3]
+        # return R.dot(self.axis2())
+        if self.child_bodynode:
+            R0 = self.child_bodynode.T[:3, :3]
+            R1 = self.transform_from_child_body_node()[:3, :3]
+            R = R0.dot(R1)
+            return R.dot(self.axis2())
+        else:
+            return self.axis2()
 
     def axis2(self, ):
         return papi.universal_joint__getAxis2(self.wid, self.skid, self.id)

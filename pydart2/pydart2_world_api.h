@@ -8,6 +8,7 @@
 
 int createWorld(double timestep);
 int createWorldFromSkel(const char* const path);
+int createWorldFromSkelXML(const char* const _xmlstr);
 void destroyWorld(int wid);
 
 int WORLD(addSkeleton)(int wid, const char* const path);

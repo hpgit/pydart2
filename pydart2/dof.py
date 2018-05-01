@@ -10,6 +10,11 @@ from . import pydart2_api as papi
 
 class Dof(object):
     """
+    :type skeleton: Skeleton
+    :type id: int
+    :type name: str
+    :type index: int
+    :type joint: Joint
     """
     def __init__(self, _skeleton, _id):
         """
