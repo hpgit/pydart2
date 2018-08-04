@@ -19,7 +19,7 @@ from .skel_vector import SkelVector
 
 from .bodynode import BodyNode
 from .dof import Dof
-from .joint import create_joint
+from .joint import create_joint, Joint, BallJoint, UniversalJoint, RevoluteJoint, FreeJoint
 from .marker import Marker
 
 
@@ -27,8 +27,8 @@ class Skeleton(object):
     """
     :type dofs: list[Dof]
     :type name_to_dof: dict[str, Dof]
-    :type joints: list[Joint | BallJoint | UniversalJoint | RevoluteJoint | FreeJoint]
-    :type name_to_joint: dict[str, Joint | BallJoint | UniversalJoint | RevoluteJoint | FreeJoint]
+    :type joints: list[Joint | BallJoint | UniversalJoint | RevoluteJoint | FreeJoint | WeldJoint | PlanarJoint]
+    :type name_to_joint: dict[str, Joint | BallJoint | UniversalJoint | RevoluteJoint | FreeJoint | WeldJoint | PlanarJoint]
     :type bodynodes: list[BodyNode]
     :type name_to_body: dict[str, BodyNode]
     :type makers: list[Marker]
@@ -301,6 +301,11 @@ class Skeleton(object):
             return None
 
     def joint(self, query):
+        """
+
+        :param query:
+        :rtype: Joint
+        """
         if isinstance(query, string_types):
             return self.name_to_joint[query]
         elif isinstance(query, int):

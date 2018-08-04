@@ -74,14 +74,16 @@ class GLUTWindow(object):
     def motionFunc(self, x, y):
         dx = x - self.mouseLastPos[0]
         dy = y - self.mouseLastPos[1]
-        modifiers = GLUT.glutGetModifiers()
+        # modifiers = GLUT.glutGetModifiers()
         tb = self.scene.tb
-        if modifiers == GLUT.GLUT_ACTIVE_SHIFT:
-            tb.zoom_to(dx, -dy)
-        elif modifiers == GLUT.GLUT_ACTIVE_CTRL:
-            tb.trans_to(dx, -dy)
-        else:
-            tb.drag_to(x, y, dx, -dy)
+        tb.drag_to(x, y, dx, -dy)
+
+        # if modifiers == GLUT.GLUT_ACTIVE_SHIFT:
+        #     tb.zoom_to(dx, -dy)
+        # elif modifiers == GLUT.GLUT_ACTIVE_CTRL:
+        #     tb.trans_to(dx, -dy)
+        # else:
+        #     tb.drag_to(x, y, dx, -dy)
         self.mouseLastPos = np.array([x, y])
 
     def idle(self, ):
