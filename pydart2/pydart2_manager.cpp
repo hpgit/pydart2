@@ -85,7 +85,8 @@ int Manager::createWorld(double timestep) {
 int Manager::createWorldFromSkel(const char* const path) {
     Manager* manager = getInstance();
 
-    dart::simulation::WorldPtr w(dart::utils::SkelParser::readWorld(path));
+    //dart::simulation::WorldPtr w(dart::utils::SkelParser::readWorld(path));
+    dart::simulation::WorldPtr w(dart::io::SkelParser::readWorld(path));
     // w->setTimeStep(timestep);
     // w->setGravity(Eigen::Vector3d(0.0, -9.81, 0.0));
     int id = manager->next_id++;
@@ -100,7 +101,8 @@ int Manager::createWorldFromSkel(const char* const path) {
 int Manager::createWorldFromSkelXML(const std::string &xmlstr) {
     Manager* manager = getInstance();
 
-    dart::simulation::WorldPtr w(dart::utils::SkelParser::readWorldXML(xmlstr));
+    //dart::simulation::WorldPtr w(dart::utils::SkelParser::readWorldXML(xmlstr));
+    dart::simulation::WorldPtr w(dart::io::SkelParser::readWorldXML(xmlstr));
     // w->setTimeStep(timestep);
     // w->setGravity(Eigen::Vector3d(0.0, -9.81, 0.0));
     int id = manager->next_id++;

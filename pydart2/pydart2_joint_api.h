@@ -86,5 +86,15 @@ void UNIVERSAL_JOINT(setAxis2)(int wid, int skid, int jid, double inv3[3]);
 const char* EULER_JOINT(getAxisOrder)(int wid, int skid, int jid);
 void EULER_JOINT(setAxisOrder)(int wid, int skid, int jid, const char* axisorder);
 
+////////////////////////////////////////
+// BallJoint Functions
+#define BALL_JOINT(funcname) ball_joint__##funcname
+#define GET_BALL_JOINT(wid, skid, jid) dynamic_cast<dart::dynamics::BallJoint*>(Manager::skeleton(wid, skid)->getJoint(jid));
+void BALL_JOINT(getAcceleration)(int wid, int skid, int jid, double outv3[3]);
+void BALL_JOINT(getVelocity)(int wid, int skid, int jid, double outv3[3]);
+void BALL_JOINT(getPosition)(int wid, int skid, int jid, double outv3[3]);
+void BALL_JOINT(setAcceleration)(int wid, int skid, int jid, double inv3[3]);
+void BALL_JOINT(setVelocity)(int wid, int skid, int jid, double inv3[3]);
+void BALL_JOINT(setPosition)(int wid, int skid, int jid, double inv3[3]);
 
 #endif // #ifndef PYDART2_JOINT_API_H

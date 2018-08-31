@@ -55,8 +55,19 @@ const char* JOINT(getType)(int wid, int skid, int jid) {
 
 
 void JOINT(setActuatorType)(int wid, int skid, int jid, int actuator_type) {
-  dart::dynamics::JointPtr joint = GET_JOINT(wid, skid, jid);
-  joint->setActuatorType(static_cast<dart::dynamics::Joint::ActuatorType>(actuator_type));
+    dart::dynamics::JointPtr joint = GET_JOINT(wid, skid, jid);
+    if(actuator_type == 0)
+        joint->setActuatorType(dart::dynamics::detail::FORCE);
+    else if(actuator_type == 1)
+        joint->setActuatorType(dart::dynamics::detail::PASSIVE);
+    else if(actuator_type == 2)
+        joint->setActuatorType(dart::dynamics::detail::SERVO);
+    else if(actuator_type == 3)
+        joint->setActuatorType(dart::dynamics::detail::ACCELERATION);
+    else if(actuator_type == 4)
+        joint->setActuatorType(dart::dynamics::detail::VELOCITY);
+    else if(actuator_type == 5)
+        joint->setActuatorType(dart::dynamics::detail::LOCKED);
 }
 
 
@@ -331,4 +342,61 @@ void EULER_JOINT(setAxisOrder)(int wid, int skid, int jid, const char* axisorder
   } else {
     ERR << " [pydart2_api] invalid EulerJoint AxisOrder" << ordering << "\n";
   }
+}
+
+
+////////////////////////////////////////
+// Joint::BALL_JOINT Functions
+void BALL_JOINT(getAcceleration)(int wid, int skid, int jid, double outv3[3]) {
+    dart::dynamics::BallJoint* joint = GET_BALL_JOINT(wid, skid, jid);
+    if (joint == NULL) {
+        ERR << " [pydart2_api] joint is not BallJoint\n";
+        return;
+    }
+    write(joint->getAccelerations(), outv3);
+}
+
+void BALL_JOINT(getVelocity)(int wid, int skid, int jid, double outv3[3]) {
+    dart::dynamics::BallJoint* joint = GET_BALL_JOINT(wid, skid, jid);
+    if (joint == NULL) {
+        ERR << " [pydart2_api] joint is not BallJoint\n";
+        return;
+    }
+    write(joint->getVelocities(), outv3);
+}
+
+void BALL_JOINT(getPosition)(int wid, int skid, int jid, double outv3[3]) {
+    dart::dynamics::BallJoint* joint = GET_BALL_JOINT(wid, skid, jid);
+    if (joint == NULL) {
+        ERR << " [pydart2_api] joint is not BallJoint\n";
+        return;
+    }
+    write(joint->getPositions(), outv3);
+}
+
+void BALL_JOINT(setAcceleration)(int wid, int skid, int jid, double inv3[3]) {
+    dart::dynamics::BallJoint* joint = GET_BALL_JOINT(wid, skid, jid);
+    if (joint == NULL) {
+        ERR << " [pydart2_api] joint is not BallJoint\n";
+        return;
+    }
+    joint->setAccelerations(read(inv3, 3));
+}
+
+void BALL_JOINT(setVelocity)(int wid, int skid, int jid, double inv3[3]) {
+    dart::dynamics::BallJoint* joint = GET_BALL_JOINT(wid, skid, jid);
+    if (joint == NULL) {
+        ERR << " [pydart2_api] joint is not BallJoint\n";
+        return;
+    }
+    joint->setVelocities(read(inv3, 3));
+}
+
+void BALL_JOINT(setPosition)(int wid, int skid, int jid, double inv3[3]) {
+    dart::dynamics::BallJoint* joint = GET_BALL_JOINT(wid, skid, jid);
+    if (joint == NULL) {
+        ERR << " [pydart2_api] joint is not BallJoint\n";
+        return;
+    }
+    joint->setPositions(read(inv3, 3));
 }

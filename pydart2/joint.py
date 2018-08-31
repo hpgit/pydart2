@@ -393,6 +393,24 @@ class BallJoint(Joint):
     def __repr__(self):
         return '[BallJoint(%d): %s]' % (self.id, self.name)
 
+    def position(self, ):
+        return papi.ball_joint__getPosition(self.wid, self.skid, self.id)
+
+    def velocity(self, ):
+        return papi.ball_joint__getVelocity(self.wid, self.skid, self.id)
+
+    def acceleration(self, ):
+        return papi.ball_joint__getAcceleration(self.wid, self.skid, self.id)
+
+    def set_position(self, _pos):
+        return papi.ball_joint__setPosition(self.wid, self.skid, self.id, _pos)
+
+    def set_velocity(self, _vel):
+        return papi.ball_joint__setVelocity(self.wid, self.skid, self.id, _vel)
+
+    def set_acceleration(self, _acc):
+        return papi.ball_joint__setAcceleration(self.wid, self.skid, self.id, _acc)
+
 
 class TranslationalJoint(Joint):
 

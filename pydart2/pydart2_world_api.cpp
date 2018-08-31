@@ -50,14 +50,17 @@ int WORLD(addSkeleton)(int wid, const char* const path) {
     SkeletonPtr skel = NULL;
     if (ext == ".sdf") {
         MSG << " [pydart_api] parse as SDF (ext: " << ext << ")" << endl;
-        skel = dart::utils::SdfParser::readSkeleton(path);
+        //skel = dart::utils::SdfParser::readSkeleton(path);
+        skel = dart::io::SdfParser::readSkeleton(path);
     } else if (ext == "urdf") {
         MSG << " [pydart_api] parse as URDF (ext: " << ext << ")" << endl;
-        dart::utils::DartLoader urdfLoader;
+        //dart::utils::DartLoader urdfLoader;
+        dart::io::DartLoader urdfLoader;
         skel = urdfLoader.parseSkeleton(path);
     } else if (ext == ".vsk") {
         MSG << " [pydart_api] parse as VSK (ext: " << ext << ")" << endl;
-        skel = dart::utils::VskParser::readSkeleton(path);
+        //skel = dart::utils::VskParser::readSkeleton(path);
+        skel = dart::io::VskParser::readSkeleton(path);
     } else {
         ERR << " [pydart_api] bad extension (ext: " << ext << ")" << endl;
         return -1;

@@ -446,7 +446,8 @@ void drawContact(
     std::vector<Eigen::Vector3d> verts;
     verts.push_back(p);
     verts.push_back(p2);
-    Eigen::aligned_vector<Eigen::Vector2i> conn;
+    //Eigen::aligned_vector<Eigen::Vector2i> conn;
+    dart::common::aligned_vector<Eigen::Vector2i> conn;
     conn.push_back(Eigen::Vector2i(0, 1));
 
 
