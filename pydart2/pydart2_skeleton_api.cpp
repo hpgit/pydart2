@@ -175,7 +175,7 @@ void SKEL(setAccelerations)(int wid, int skid, double* inv, int ndofs) {
 
 ////////////////////////////////////////
 // Skeleton::Difference Functions
-void SKEL(getPositionDifferences)(int wid, int skid,
+void SKEL(getVelocityDifferences)(int wid, int skid,
                                   double* inv1, int indofs1,
                                   double* inv2, int indofs2,
                                   double* outv, int ndofs) {
@@ -186,7 +186,7 @@ void SKEL(getPositionDifferences)(int wid, int skid,
     write(dq_diff, outv);
 }
 
-void SKEL(getVelocityDifferences)(int wid, int skid,
+void SKEL(getPositionDifferences)(int wid, int skid,
                                   double* inv1, int indofs1,
                                   double* inv2, int indofs2,
                                   double* outv, int ndofs) {
@@ -256,4 +256,18 @@ void SKEL(getConstraintForces)(int wid, int skid, double* outv, int ndofs) {
 void SKEL(getInvMassMatrix)(int wid, int skid, double* outm, int nrows, int ncols) {
     dart::dynamics::SkeletonPtr skel = GET_SKELETON(wid, skid);
     write_matrix(skel->getInvMassMatrix(), outm);
+}
+
+void SKEL(getStablePDForces)(int wid, int skid, double h, double kp, double kd, double* inv1, int indofs1, double* outv, int ndofs) {
+    dart::dynamics::SkeletonPtr skel = GET_SKELETON(wid, skid);
+    double kd_h = kd * h;
+    Eigen::VectorXd dq = skel->getVelocities();
+
+    Eigen::VectorXd p_d = kp * (skel->getPositionDifferences(read(inv1, indofs1), skel->getPositions()) - h * dq) -  kd * dq;
+    Eigen::VectorXd tau = p_d - kd_h * (skel->getMassMatrix() + kd_h * Eigen::MatrixXd::Identity(ndofs, ndofs))
+            .llt().solve(p_d - skel->getCoriolisAndGravityForces() + skel->getConstraintForces());
+
+    tau.head(6).setZero();
+
+    write(tau, outv);
 }

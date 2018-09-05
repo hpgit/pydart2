@@ -71,5 +71,9 @@ void SKEL(getCoriolisAndGravityForces)(int wid, int skid, double* outv, int ndof
 void SKEL(getConstraintForces)(int wid, int skid, double* outv, int ndofs);
 void SKEL(getInvMassMatrix)(int wid, int skid, double* outm, int nrows, int ncols);
 
+////////////////////////////////////////
+// Skeleton::Stable PD Functions
+void SKEL(getStablePDForces)(int wid, int skid, double h, double kp, double kd, double* inv1, int indofs1, double* outv, int ndofs);
+
 
 #endif // #ifndef PYDART2_SKELETON_API_H

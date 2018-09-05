@@ -19,7 +19,7 @@ from .skel_vector import SkelVector
 
 from .bodynode import BodyNode
 from .dof import Dof
-from .joint import create_joint, Joint, BallJoint, UniversalJoint, RevoluteJoint, FreeJoint
+from .joint import create_joint, Joint, BallJoint, UniversalJoint, RevoluteJoint, FreeJoint, PrismaticJoint, WeldJoint
 from .marker import Marker
 
 
@@ -27,7 +27,7 @@ class Skeleton(object):
     """
     :type dofs: list[Dof]
     :type name_to_dof: dict[str, Dof]
-    :type joints: list[Joint | BallJoint | UniversalJoint | RevoluteJoint | FreeJoint | WeldJoint | PlanarJoint]
+    :type joints: list[Joint | BallJoint | UniversalJoint | RevoluteJoint | FreeJoint | WeldJoint | PlanarJoint | PrismaticJoint]
     :type name_to_joint: dict[str, Joint | BallJoint | UniversalJoint | RevoluteJoint | FreeJoint | WeldJoint | PlanarJoint]
     :type bodynodes: list[BodyNode]
     :type name_to_body: dict[str, BodyNode]
@@ -393,6 +393,7 @@ class Skeleton(object):
                                                   self.id, self.ndofs)
 
     def force_upper_limits(self):
+
         return papi.skeleton__getForceUpperLimits(self.world.id,
                                                   self.id, self.ndofs)
 
@@ -403,6 +404,10 @@ class Skeleton(object):
     @property
     def tau_upper(self):
         return self.force_upper_limits()
+
+    def get_spd(self, q_des, h, kp, kd):
+        return papi.skeleton__getStablePDForces(self.world.id,
+                                                self.id, h, kp, kd, q_des, self.ndofs)
 
     # def approx_inertia(self, axis):
     #     """Calculates the point-masses approximated inertia
