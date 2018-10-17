@@ -445,6 +445,24 @@ class FreeJoint(Joint):
     def __repr__(self):
         return '[FreeJoint(%d): %s]' % (self.id, self.name)
 
+    def position(self, ):
+        return papi.free_joint__getPosition(self.wid, self.skid, self.id)
+
+    def velocity(self, ):
+        return papi.free_joint__getVelocity(self.wid, self.skid, self.id)
+
+    def acceleration(self, ):
+        return papi.free_joint__getAcceleration(self.wid, self.skid, self.id)
+
+    def set_position(self, _pos):
+        return papi.free_joint__setPosition(self.wid, self.skid, self.id, _pos)
+
+    def set_velocity(self, _vel):
+        return papi.free_joint__setVelocity(self.wid, self.skid, self.id, _vel)
+
+    def set_acceleration(self, _acc):
+        return papi.free_joint__setAcceleration(self.wid, self.skid, self.id, _acc)
+
 
 def create_joint(_skeleton, _id):
     wid = _skeleton.world.id

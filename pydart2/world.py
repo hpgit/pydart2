@@ -89,6 +89,13 @@ class World(object):
     def t(self):
         return self.time()
 
+    def set_time(self, _t):
+        papi.world__setTime(self.id, _t)
+
+    @t.setter
+    def t(self, _t):
+        self.set_time(_t)
+
     def time_step(self):
         return papi.world__getTimeStep(self.id)
 

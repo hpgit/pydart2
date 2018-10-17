@@ -78,14 +78,6 @@ void UNIVERSAL_JOINT(setAxis1)(int wid, int skid, int jid, double inv3[3]);
 void UNIVERSAL_JOINT(getAxis2)(int wid, int skid, int jid, double outv3[3]);
 void UNIVERSAL_JOINT(setAxis2)(int wid, int skid, int jid, double inv3[3]);
 
-
-////////////////////////////////////////
-// EulerJoint Functions
-#define EULER_JOINT(funcname) euler_joint__##funcname
-#define GET_EULER_JOINT(wid, skid, jid) dynamic_cast<dart::dynamics::EulerJoint*>(Manager::skeleton(wid, skid)->getJoint(jid));
-const char* EULER_JOINT(getAxisOrder)(int wid, int skid, int jid);
-void EULER_JOINT(setAxisOrder)(int wid, int skid, int jid, const char* axisorder);
-
 ////////////////////////////////////////
 // BallJoint Functions
 #define BALL_JOINT(funcname) ball_joint__##funcname
@@ -96,5 +88,24 @@ void BALL_JOINT(getPosition)(int wid, int skid, int jid, double outv3[3]);
 void BALL_JOINT(setAcceleration)(int wid, int skid, int jid, double inv3[3]);
 void BALL_JOINT(setVelocity)(int wid, int skid, int jid, double inv3[3]);
 void BALL_JOINT(setPosition)(int wid, int skid, int jid, double inv3[3]);
+
+////////////////////////////////////////
+// EulerJoint Functions
+#define EULER_JOINT(funcname) euler_joint__##funcname
+#define GET_EULER_JOINT(wid, skid, jid) dynamic_cast<dart::dynamics::EulerJoint*>(Manager::skeleton(wid, skid)->getJoint(jid));
+const char* EULER_JOINT(getAxisOrder)(int wid, int skid, int jid);
+void EULER_JOINT(setAxisOrder)(int wid, int skid, int jid, const char* axisorder);
+
+////////////////////////////////////////
+// FreeJoint Functions
+#define FREE_JOINT(funcname) free_joint__##funcname
+#define GET_FREE_JOINT(wid, skid, jid) dynamic_cast<dart::dynamics::FreeJoint*>(Manager::skeleton(wid, skid)->getJoint(jid));
+void FREE_JOINT(getAcceleration)(int wid, int skid, int jid, double outv6[6]);
+void FREE_JOINT(getVelocity)(int wid, int skid, int jid, double outv6[6]);
+void FREE_JOINT(getPosition)(int wid, int skid, int jid, double outv6[6]);
+void FREE_JOINT(setAcceleration)(int wid, int skid, int jid, double inv6[6]);
+void FREE_JOINT(setVelocity)(int wid, int skid, int jid, double inv6[6]);
+void FREE_JOINT(setPosition)(int wid, int skid, int jid, double inv6[6]);
+
 
 #endif // #ifndef PYDART2_JOINT_API_H

@@ -308,43 +308,6 @@ void UNIVERSAL_JOINT(setAxis2)(int wid, int skid, int jid, double inv3[3]) {
   joint->setAxis2(read(inv3, 3));
 }
 
-
-////////////////////////////////////////
-// Joint::EULER_JOINT Functions
-const char* EULER_JOINT(getAxisOrder)(int wid, int skid, int jid) {
-    dart::dynamics::EulerJoint* joint = GET_EULER_JOINT(wid, skid, jid);
-    if (joint == NULL) {
-      ERR << " [pydart2_api] joint is not EulerJoint\n";
-      return "Wrong Joint Type";
-    }
-    auto ordering = joint->getAxisOrder();
-    if (ordering == dart::dynamics::EulerJoint::AxisOrder::XYZ) {
-        return "XYZ";
-    }
-    if (ordering == dart::dynamics::EulerJoint::AxisOrder::ZYX) {
-        return "ZYX";
-    }
-    return "Invalid Order";
-}
-
-
-void EULER_JOINT(setAxisOrder)(int wid, int skid, int jid, const char* axisorder) {
-  dart::dynamics::EulerJoint* joint = GET_EULER_JOINT(wid, skid, jid);
-  if (joint == NULL) {
-    ERR << " [pydart2_api] joint is not EulerJoint\n";
-    return;
-  }
-  std::string ordering(axisorder);
-  if (ordering == "XYZ") {
-    joint->setAxisOrder(dart::dynamics::EulerJoint::AxisOrder::XYZ);
-  } else if (ordering == "ZYX"){
-    joint->setAxisOrder(dart::dynamics::EulerJoint::AxisOrder::ZYX);
-  } else {
-    ERR << " [pydart2_api] invalid EulerJoint AxisOrder" << ordering << "\n";
-  }
-}
-
-
 ////////////////////////////////////////
 // Joint::BALL_JOINT Functions
 void BALL_JOINT(getAcceleration)(int wid, int skid, int jid, double outv3[3]) {
@@ -399,4 +362,96 @@ void BALL_JOINT(setPosition)(int wid, int skid, int jid, double inv3[3]) {
         return;
     }
     joint->setPositions(read(inv3, 3));
+}
+
+////////////////////////////////////////
+// Joint::EULER_JOINT Functions
+const char* EULER_JOINT(getAxisOrder)(int wid, int skid, int jid) {
+    dart::dynamics::EulerJoint* joint = GET_EULER_JOINT(wid, skid, jid);
+    if (joint == NULL) {
+      ERR << " [pydart2_api] joint is not EulerJoint\n";
+      return "Wrong Joint Type";
+    }
+    auto ordering = joint->getAxisOrder();
+    if (ordering == dart::dynamics::EulerJoint::AxisOrder::XYZ) {
+        return "XYZ";
+    }
+    if (ordering == dart::dynamics::EulerJoint::AxisOrder::ZYX) {
+        return "ZYX";
+    }
+    return "Invalid Order";
+}
+
+
+void EULER_JOINT(setAxisOrder)(int wid, int skid, int jid, const char* axisorder) {
+  dart::dynamics::EulerJoint* joint = GET_EULER_JOINT(wid, skid, jid);
+  if (joint == NULL) {
+    ERR << " [pydart2_api] joint is not EulerJoint\n";
+    return;
+  }
+  std::string ordering(axisorder);
+  if (ordering == "XYZ") {
+    joint->setAxisOrder(dart::dynamics::EulerJoint::AxisOrder::XYZ);
+  } else if (ordering == "ZYX"){
+    joint->setAxisOrder(dart::dynamics::EulerJoint::AxisOrder::ZYX);
+  } else {
+    ERR << " [pydart2_api] invalid EulerJoint AxisOrder" << ordering << "\n";
+  }
+}
+
+
+////////////////////////////////////////
+// Joint::FREE_JOINT Functions
+void FREE_JOINT(getAcceleration)(int wid, int skid, int jid, double outv6[6]) {
+    dart::dynamics::FreeJoint* joint = GET_FREE_JOINT(wid, skid, jid);
+    if (joint == NULL) {
+        ERR << " [pydart2_api] joint is not FreeJoint\n";
+        return;
+    }
+    write(joint->getAccelerations(), outv6);
+}
+
+void FREE_JOINT(getVelocity)(int wid, int skid, int jid, double outv6[6]) {
+    dart::dynamics::FreeJoint* joint = GET_FREE_JOINT(wid, skid, jid);
+    if (joint == NULL) {
+        ERR << " [pydart2_api] joint is not FreeJoint\n";
+        return;
+    }
+    write(joint->getVelocities(), outv6);
+}
+
+void FREE_JOINT(getPosition)(int wid, int skid, int jid, double outv6[6]) {
+    dart::dynamics::FreeJoint* joint = GET_FREE_JOINT(wid, skid, jid);
+    if (joint == NULL) {
+        ERR << " [pydart2_api] joint is not FreeJoint\n";
+        return;
+    }
+    write(joint->getPositions(), outv6);
+}
+
+void FREE_JOINT(setAcceleration)(int wid, int skid, int jid, double inv6[6]) {
+    dart::dynamics::FreeJoint* joint = GET_FREE_JOINT(wid, skid, jid);
+    if (joint == NULL) {
+        ERR << " [pydart2_api] joint is not FreeJoint\n";
+        return;
+    }
+    joint->setAccelerations(read(inv6, 6));
+}
+
+void FREE_JOINT(setVelocity)(int wid, int skid, int jid, double inv6[6]) {
+    dart::dynamics::FreeJoint* joint = GET_FREE_JOINT(wid, skid, jid);
+    if (joint == NULL) {
+        ERR << " [pydart2_api] joint is not FreeJoint\n";
+        return;
+    }
+    joint->setVelocities(read(inv6, 6));
+}
+
+void FREE_JOINT(setPosition)(int wid, int skid, int jid, double inv6[6]) {
+    dart::dynamics::FreeJoint* joint = GET_FREE_JOINT(wid, skid, jid);
+    if (joint == NULL) {
+        ERR << " [pydart2_api] joint is not FreeJoint\n";
+        return;
+    }
+    joint->setPositions(read(inv6, 6));
 }
