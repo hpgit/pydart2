@@ -91,10 +91,10 @@ int SHAPE(getTypeID)(int wid, int skid, int bid, int sid) {
     using dart::dynamics::CapsuleShape;
     using dart::dynamics::ConeShape;
     using dart::dynamics::PlaneShape;
-    using dart::dynamics::MultiSphereShape;
     using dart::dynamics::MeshShape;
     using dart::dynamics::SoftMeshShape;
     using dart::dynamics::LineSegmentShape;
+//    using dart::dynamics::MultiSphereShape;
 
     // dtmsg << shape->getType() << "\n";
 
@@ -105,10 +105,10 @@ int SHAPE(getTypeID)(int wid, int skid, int bid, int sid) {
     else if (shape->is<CapsuleShape>()) return 4;
     else if (shape->is<ConeShape>()) return 5;
     else if (shape->is<PlaneShape>()) return 6;
-    else if (shape->is<MultiSphereShape>()) return 7;
-    else if (shape->is<MeshShape>()) return 8;
-    else if (shape->is<SoftMeshShape>()) return 9;
-    else if (shape->is<LineSegmentShape>()) return 10;
+    else if (shape->is<MeshShape>()) return 7;
+    else if (shape->is<SoftMeshShape>()) return 8;
+    else if (shape->is<LineSegmentShape>()) return 9;
+//    else if (shape->is<MultiSphereShape>()) return 7;
     return -1;
 }
 
@@ -274,31 +274,31 @@ void PLANE_SHAPE(setOffset)(int wid, int skid, int bid, int sid, double _offset)
 }
 
 ////////////////////////////////////////
-// MultiSphereShape Functions
-void MULTISPHERE_SHAPE(addSphere)(int wid, int skid, int bid, int sid, double inv4[4]) {
-    auto shape = GET_MULTISPHERE_SHAPE(wid, skid, bid, sid);
-    shape->addSphere(inv4[0], Eigen::Vector3d(inv4[1], inv4[2], inv4[3]));
-}
-
-void MULTISPHERE_SHAPE(getSpheres)(int wid, int skid, int bid, int sid, double* outv, int nout) {
-    auto shape = GET_MULTISPHERE_SHAPE(wid, skid, bid, sid);
-    auto spheres = shape->getSpheres();
-
-    int ptr = 0;
-    for (auto sph: spheres) {
-        auto r = sph.first;
-        auto pos = sph.second;
-        outv[ptr++] = r;
-        outv[ptr++] = pos[0];
-        outv[ptr++] = pos[1];
-        outv[ptr++] = pos[2];
-    }
-}
-
-int MULTISPHERE_SHAPE(getNumSpheres)(int wid, int skid, int bid, int sid) {
-    auto shape = GET_MULTISPHERE_SHAPE(wid, skid, bid, sid);
-    return shape->getNumSpheres();
-}
+//// MultiSphereShape Functions
+//void MULTISPHERE_SHAPE(addSphere)(int wid, int skid, int bid, int sid, double inv4[4]) {
+//    auto shape = GET_MULTISPHERE_SHAPE(wid, skid, bid, sid);
+//    shape->addSphere(inv4[0], Eigen::Vector3d(inv4[1], inv4[2], inv4[3]));
+//}
+//
+//void MULTISPHERE_SHAPE(getSpheres)(int wid, int skid, int bid, int sid, double* outv, int nout) {
+//    auto shape = GET_MULTISPHERE_SHAPE(wid, skid, bid, sid);
+//    auto spheres = shape->getSpheres();
+//
+//    int ptr = 0;
+//    for (auto sph: spheres) {
+//        auto r = sph.first;
+//        auto pos = sph.second;
+//        outv[ptr++] = r;
+//        outv[ptr++] = pos[0];
+//        outv[ptr++] = pos[1];
+//        outv[ptr++] = pos[2];
+//    }
+//}
+//
+//int MULTISPHERE_SHAPE(getNumSpheres)(int wid, int skid, int bid, int sid) {
+//    auto shape = GET_MULTISPHERE_SHAPE(wid, skid, bid, sid);
+//    return shape->getNumSpheres();
+//}
 
 
 ////////////////////////////////////////

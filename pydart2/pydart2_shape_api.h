@@ -103,13 +103,13 @@ void PLANE_SHAPE(setOffset)(int wid, int skid, int bid, int sid, double _offset)
 
 
 ////////////////////////////////////////
-// MultiSphereShape Functions
-#define MULTISPHERE_SHAPE(funcname) multisphereshape__##funcname
-#define GET_MULTISPHERE_SHAPE(wid, skid, bid, sid) dynamic_cast<dart::dynamics::MultiSphereShape*>((Manager::skeleton(wid, skid)->getBodyNode(bid)->getShapeNodes()[sid])->getShape().get());
-
-void MULTISPHERE_SHAPE(addSphere)(int wid, int skid, int bid, int sid, double inv4[4]);
-void MULTISPHERE_SHAPE(getSpheres)(int wid, int skid, int bid, int sid, double* outv, int nout);
-int MULTISPHERE_SHAPE(getNumSpheres)(int wid, int skid, int bid, int sid);
+//// MultiSphereShape Functions
+//#define MULTISPHERE_SHAPE(funcname) multisphereshape__##funcname
+//#define GET_MULTISPHERE_SHAPE(wid, skid, bid, sid) dynamic_cast<dart::dynamics::MultiSphereShape*>((Manager::skeleton(wid, skid)->getBodyNode(bid)->getShapeNodes()[sid])->getShape().get());
+//
+//void MULTISPHERE_SHAPE(addSphere)(int wid, int skid, int bid, int sid, double inv4[4]);
+//void MULTISPHERE_SHAPE(getSpheres)(int wid, int skid, int bid, int sid, double* outv, int nout);
+//int MULTISPHERE_SHAPE(getNumSpheres)(int wid, int skid, int bid, int sid);
 
 
 

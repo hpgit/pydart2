@@ -240,30 +240,30 @@ class PlaneShape(Shape):
         return '[PlaneShape(%d:%d)]' % (self.bid, self.id)
 
 
-class MultiSphereShape(Shape):
-    def __init__(self, _shapenode):
-        Shape.__init__(self, _shapenode)
-
-    def add_sphere(self, r, pos):
-        sphere = np.concatenate([[r], pos])
-        papi.multisphereshape__addSphere(self.wid, self.skid, self.bid,
-                                         self.id, sphere)
-
-    def spheres(self, ):
-        n = self.num_spheres()
-        data = papi.multisphereshape__getSpheres(self.wid, self.skid,
-                                                 self.bid, self.id,
-                                                 n * 4)
-        spheres = np.split(data, n)
-        spheres = [{'r': s[0], 'pos': s[1:]} for s in spheres]
-        return spheres
-
-    def num_spheres(self, ):
-        return papi.multisphereshape__getNumSpheres(self.wid, self.skid,
-                                                    self.bid, self.id)
-
-    def __repr__(self):
-        return '[MultiSphereShape(%d:%d)]' % (self.bid, self.id)
+# class MultiSphereShape(Shape):
+#     def __init__(self, _shapenode):
+#         Shape.__init__(self, _shapenode)
+#
+#     def add_sphere(self, r, pos):
+#         sphere = np.concatenate([[r], pos])
+#         papi.multisphereshape__addSphere(self.wid, self.skid, self.bid,
+#                                          self.id, sphere)
+#
+#     def spheres(self, ):
+#         n = self.num_spheres()
+#         data = papi.multisphereshape__getSpheres(self.wid, self.skid,
+#                                                  self.bid, self.id,
+#                                                  n * 4)
+#         spheres = np.split(data, n)
+#         spheres = [{'r': s[0], 'pos': s[1:]} for s in spheres]
+#         return spheres
+#
+#     def num_spheres(self, ):
+#         return papi.multisphereshape__getNumSpheres(self.wid, self.skid,
+#                                                     self.bid, self.id)
+#
+#     def __repr__(self):
+#         return '[MultiSphereShape(%d:%d)]' % (self.bid, self.id)
 
 
 class MeshShape(Shape):
@@ -308,7 +308,7 @@ def create_shape(shapenode):
     type_ = papi.shape__getTypeID(wid, skid, bid, id)
     # type_ = 1 if type_ == -1 else type_  # Assume to be ELLIPSOID
     shape_classes = [SphereShape, BoxShape, EllipsoidShape, CylinderShape,
-                     CapsuleShape, ConeShape, PlaneShape, MultiSphereShape,
+                     CapsuleShape, ConeShape, PlaneShape,
                      MeshShape, SoftMeshShape, LineSegmentShape]
     if 0 <= type_ < len(shape_classes):
         cls = shape_classes[type_]
