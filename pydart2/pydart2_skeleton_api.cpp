@@ -264,7 +264,10 @@ void SKEL(getStablePDForces)(int wid, int skid, double h, double kp, double kd, 
     Eigen::VectorXd dq = skel->getVelocities();
 
     Eigen::VectorXd p_d = kp * (skel->getPositionDifferences(read(inv1, indofs1), skel->getPositions()) - h * dq) -  kd * dq;
-    Eigen::VectorXd tau = p_d - kd_h * (skel->getMassMatrix() + kd_h * Eigen::MatrixXd::Identity(ndofs, ndofs))
+    p_d.head(6).setZero();
+    Eigen::MatrixXd skel_identity = Eigen::MatrixXd::Identity(ndofs, ndofs);
+    skel_identity.block<6,6>(0, 0).setZero();
+    Eigen::VectorXd tau = p_d - kd_h * (skel->getMassMatrix() + kd_h * skel_identity)
             .llt().solve(p_d - skel->getCoriolisAndGravityForces() + skel->getConstraintForces());
 
     tau.head(6).setZero();
