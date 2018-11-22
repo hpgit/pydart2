@@ -281,8 +281,8 @@ void SKEL(getStablePDForcesExtended)(int wid, int skid, double h, double* inv1, 
     Eigen::VectorXd Kp = read(inv1, indofs1);
     Eigen::VectorXd Kd = read(inv2, indofs2);
 
-    Eigen::VectorXd p_d = Kp.asDiagonal() * (skel->getPositionDifferences(read(inv3, indofs3), skel->getPositions()) - h * dq) -  Kd.asDiagonal() * dq;
-    Eigen::VectorXd tau = p_d - h * Kd.asDiagonal() * (skel->getMassMatrix() + h * Eigen::MatrixXd(Kd.asDiagonal()))
+    Eigen::VectorXd p_d = Kp.cwiseProduct(skel->getPositionDifferences(read(inv3, indofs3), skel->getPositions()) - h * dq) -  Kd.cwiseProduct(dq);
+    Eigen::VectorXd tau = p_d - h * Kd.cwiseProduct(skel->getMassMatrix() + h * Eigen::MatrixXd(Kd.asDiagonal()))
             .llt().solve(p_d - skel->getCoriolisAndGravityForces() + skel->getConstraintForces());
 
     tau.head(6).setZero();
