@@ -409,6 +409,10 @@ class Skeleton(object):
         return papi.skeleton__getStablePDForces(self.world.id,
                                                 self.id, h, kp, kd, q_des, self.ndofs)
 
+    def get_spd_extended(self, q_des, h, kp, kd):
+        return papi.skeleton__getStablePDForcesExtended(self.world.id,
+                                                self.id, h, kp, kd, q_des, self.ndofs)
+
     # def approx_inertia(self, axis):
     #     """Calculates the point-masses approximated inertia
     #     with respect to the given axis """

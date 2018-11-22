@@ -74,6 +74,11 @@ void SKEL(getInvMassMatrix)(int wid, int skid, double* outm, int nrows, int ncol
 ////////////////////////////////////////
 // Skeleton::Stable PD Functions
 void SKEL(getStablePDForces)(int wid, int skid, double h, double kp, double kd, double* inv1, int indofs1, double* outv, int ndofs);
+void SKEL(getStablePDForcesExtended)(int wid, int skid, double h,
+                            double* inv1, int indofs1,
+                            double* inv2, int indofs2,
+                            double* inv3, int indofs3,
+                            double* outv, int ndofs);
 
 
 #endif // #ifndef PYDART2_SKELETON_API_H

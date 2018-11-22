@@ -42,6 +42,7 @@ namespace std {
 %apply (double* IN_ARRAY1, int DIM1) {(double* inv, int ndofs)};
 %apply (double* IN_ARRAY1, int DIM1) {(double* inv1, int indofs1)};
 %apply (double* IN_ARRAY1, int DIM1) {(double* inv2, int indofs2)};
+%apply (double* IN_ARRAY1, int DIM1) {(double* inv3, int indofs3)};
 
 %apply (double* ARGOUT_ARRAY1, int DIM1) {(double* outv, int ndofs)};
 %apply (double* ARGOUT_ARRAY1, int DIM1) {(double* outv1, int ondofs1)};
