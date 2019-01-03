@@ -20,7 +20,7 @@ from .marker import Marker
 from .contact import Contact
 from .constraints import BallJointConstraint
 from .collision_result import CollisionResult
-from .shape import Shape, SoftMeshShape, BoxShape, CylinderShape, EllipsoidShape, LineSegmentShape, PlaneShape, MeshShape
+from .shape import Shape, SoftMeshShape, BoxShape, SphereShape, CylinderShape, EllipsoidShape, LineSegmentShape, PlaneShape, MeshShape
 
 assert utils
 assert World

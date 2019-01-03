@@ -38,6 +38,7 @@ class World(object):
         self.skeletons = list()
         self.control_skel = None
         self.recording = None
+        self.collision_auto_update = True
 
         if skel_path is not None and not xmlstr:
             skel_path = os.path.realpath(skel_path)
@@ -144,7 +145,8 @@ class World(object):
 
         papi.world__step(self.id)
         self._frame += 1
-        self.collision_result.update()
+        if self.collision_auto_update:
+            self.collision_result.update()
         if self.recording:
             self.recording.bake()
 

@@ -280,10 +280,38 @@ void SKEL(getStablePDForcesExtended)(int wid, int skid, double h, double* inv1, 
     Eigen::VectorXd dq = skel->getVelocities();
     Eigen::VectorXd Kp = read(inv1, indofs1);
     Eigen::VectorXd Kd = read(inv2, indofs2);
+    std::cout << Eigen::nbThreads() << std::endl;
 
     Eigen::VectorXd p_d = Kp.cwiseProduct(skel->getPositionDifferences(read(inv3, indofs3), skel->getPositions()) - h * dq) -  Kd.cwiseProduct(dq);
+//    Eigen::VectorXd tau = p_d - h * Kd.cwiseProduct(
+//            (skel->getMassMatrix() + h * Eigen::MatrixXd(Kd.asDiagonal())).llt().solve(p_d - skel->getCoriolisAndGravityForces() + skel->getConstraintForces()));
     Eigen::VectorXd tau = p_d - h * Kd.cwiseProduct(
+            (skel->getMassMatrix() + h * Eigen::MatrixXd(Kd.asDiagonal())).lu().solve(p_d - skel->getCoriolisAndGravityForces() + skel->getConstraintForces()));
+
+    tau.head(6).setZero();
+
+    write(tau, outv);
+}
+
+void SKEL(getSimpleStablePDForcesExtended)(int wid, int skid, double h, double* inv0, int indofs0, double* inv1, int indofs1, double* inv2, int indofs2, double* inv3, int indofs3, double* outv, int ndofs){
+    dart::dynamics::SkeletonPtr skel = GET_SKELETON(wid, skid);
+    Eigen::VectorXd dq = skel->getVelocities();
+    Eigen::VectorXd mass_matrix_eig = read(inv0, indofs0);
+    Eigen::VectorXd Kp = read(inv1, indofs1);
+    Eigen::VectorXd Kd = read(inv2, indofs2);
+
+    Eigen::VectorXd p_d = Kp.cwiseProduct(skel->getPositionDifferences(read(inv3, indofs3), skel->getPositions()) - h * dq) -  Kd.cwiseProduct(dq);
+    std::cout << "mass_matrix_eig : " << mass_matrix_eig << std::endl;
+    std::cout << "mass_eig edit : " << (mass_matrix_eig + h * Kd).cwiseInverse() << std::endl;
+
+    Eigen::VectorXd tau = p_d - h * Kd.cwiseProduct(
+                    (p_d - skel->getCoriolisAndGravityForces() + skel->getConstraintForces()).cwiseProduct((mass_matrix_eig + h * Kd).cwiseInverse()));
+    std::cout << "tau : " << tau << std::endl;
+
+    Eigen::VectorXd tau_ref = p_d - h * Kd.cwiseProduct(
             (skel->getMassMatrix() + h * Eigen::MatrixXd(Kd.asDiagonal())).llt().solve(p_d - skel->getCoriolisAndGravityForces() + skel->getConstraintForces()));
+    std::cout << "tau_ref : " << tau_ref << std::endl;
+
 
     tau.head(6).setZero();
 

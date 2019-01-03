@@ -283,7 +283,7 @@ void drawShape(
         using dart::dynamics::CapsuleShape;
         using dart::dynamics::ConeShape;
         using dart::dynamics::PlaneShape;
-        using dart::dynamics::MultiSphereShape;
+        // using dart::dynamics::MultiSphereShape;
         using dart::dynamics::MeshShape;
         using dart::dynamics::SoftMeshShape;
         using dart::dynamics::LineSegmentShape;
@@ -318,19 +318,19 @@ void drawShape(
           const auto* cone = static_cast<const ConeShape*>(shape);
           ri->drawCone(cone->getRadius(), cone->getHeight());
         }
-        else if (shape->is<MultiSphereShape>())
-        {
-          const auto* multiSphere = static_cast<const MultiSphereShape*>(shape);
-          const auto& spheres = multiSphere->getSpheres();
-          for (const auto& sphere : spheres)
-          {
-            glTranslated(sphere.second.x(), sphere.second.y(), sphere.second.z());
-            ri->drawSphere(sphere.first);
-            glTranslated(-sphere.second.x(), -sphere.second.y(), -sphere.second.z());
-          }
-          // TODO(JS): This is an workaround that draws only spheres rather than the
-          // actual convex hull.
-        }
+        // else if (shape->is<MultiSphereShape>())
+        // {
+        //   const auto* multiSphere = static_cast<const MultiSphereShape*>(shape);
+        //   const auto& spheres = multiSphere->getSpheres();
+        //   for (const auto& sphere : spheres)
+        //   {
+        //     glTranslated(sphere.second.x(), sphere.second.y(), sphere.second.z());
+        //     ri->drawSphere(sphere.first);
+        //     glTranslated(-sphere.second.x(), -sphere.second.y(), -sphere.second.z());
+        //   }
+        //   // TODO(JS): This is an workaround that draws only spheres rather than the
+        //   // actual convex hull.
+        // }
         else if (shape->is<MeshShape>())
         {
           const auto& mesh = static_cast<const MeshShape*>(shape);

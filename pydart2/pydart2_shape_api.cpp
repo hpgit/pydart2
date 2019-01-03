@@ -160,14 +160,16 @@ void BOX_SHAPE(setSize)(int wid, int skid, int bid, int sid, double inv3[3]) {
 void ELLIPSOID_SHAPE(getSize)(int wid, int skid, int bid, int sid, double outv3[3]) {
     dart::dynamics::EllipsoidShape* shape = GET_ELLIPSOID_SHAPE(wid, skid, bid, sid);
     if (shape != NULL) {
-      write(shape->getSize(), outv3);
+        // write(shape->getSize(), outv3);
+        write(shape->getDiameters(), outv3);
     }
 }
 
 void ELLIPSOID_SHAPE(setSize)(int wid, int skid, int bid, int sid, double inv3[3]) {
     dart::dynamics::EllipsoidShape* shape = GET_ELLIPSOID_SHAPE(wid, skid, bid, sid);
     if (shape != NULL) {
-        shape->setSize(read(inv3, 3));
+        // shape->setSize(read(inv3, 3));
+        shape->setDiameters(read(inv3, 3));
     }
 }
 

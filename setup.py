@@ -31,7 +31,14 @@ print("PYDART2_ODE_FOUND = %s" % PYDART2_ODE_FOUND)
 print("------------------------")
 
 CXX_FLAGS = '-Wall -msse2 -fPIC -std=c++11 -Xlinker -rpath /usr/local/lib '
-CXX_FLAGS += '-O3 -DNDEBUG -shared '
+if _platform == 'darwin':
+    CXX_FLAGS = '-Wall -msse2 -fPIC -std=c++11 '
+
+if _platform == 'linux' or _platform == 'linux2':
+    CXX_FLAGS += '-O3 -DNDEBUG -shared '
+elif _platform == 'darwin':
+    CXX_FLAGS += '-O3 -DNDEBUG '
+
 CXX_FLAGS += '-g -fno-omit-frame-pointer -fno-inline-functions '
 CXX_FLAGS += '-fno-optimize-sibling-calls '
 
@@ -99,10 +106,11 @@ libraries += ['dart-optimizer-nlopt',
 if _platform == "linux" or _platform == "linux2":
     libraries += ['GL', 'glut', 'Xmu', 'Xi']
     CXX_FLAGS += '-fno-inline-functions-called-once '
-elif _platform == "darwin":
-    CXX_FLAGS += '-framework Cocoa '
-    CXX_FLAGS += '-framework OpenGL '
-    CXX_FLAGS += '-framework GLUT '
+    CXX_FLAGS += '-fopenmp'
+# elif _platform == "darwin":
+#     CXX_FLAGS += '-framework Cocoa '
+#     CXX_FLAGS += '-framework OpenGL '
+#     CXX_FLAGS += '-framework GLUT '
 
     # libraries += ['GLUT', 'Cocoa', 'OpenGL']
 libraries += ['BulletDynamics', 'BulletCollision',

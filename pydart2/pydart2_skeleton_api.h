@@ -79,6 +79,12 @@ void SKEL(getStablePDForcesExtended)(int wid, int skid, double h,
                             double* inv2, int indofs2,
                             double* inv3, int indofs3,
                             double* outv, int ndofs);
+void SKEL(getSimpleStablePDForcesExtended)(int wid, int skid, double h,
+                                     double* inv0, int indofs0,
+                                     double* inv1, int indofs1,
+                                     double* inv2, int indofs2,
+                                     double* inv3, int indofs3,
+                                     double* outv, int ndofs);
 
 
 #endif // #ifndef PYDART2_SKELETON_API_H

@@ -40,6 +40,7 @@ namespace std {
 %apply (double ARGOUT_ARRAY2[ANY][ANY]) {(double outv44[4][4])};
 
 %apply (double* IN_ARRAY1, int DIM1) {(double* inv, int ndofs)};
+%apply (double* IN_ARRAY1, int DIM1) {(double* inv0, int indofs0)};
 %apply (double* IN_ARRAY1, int DIM1) {(double* inv1, int indofs1)};
 %apply (double* IN_ARRAY1, int DIM1) {(double* inv2, int indofs2)};
 %apply (double* IN_ARRAY1, int DIM1) {(double* inv3, int indofs3)};
