@@ -106,8 +106,8 @@ libraries += ['dart-optimizer-nlopt',
 if _platform == "linux" or _platform == "linux2":
     libraries += ['GL', 'glut', 'Xmu', 'Xi']
     CXX_FLAGS += '-fno-inline-functions-called-once '
-    CXX_FLAGS += '-fopenmp'
-    libraries += ['gomp']
+    # CXX_FLAGS += '-fopenmp'
+    # libraries += ['gomp']
 # elif _platform == "darwin":
 #     CXX_FLAGS += '-framework Cocoa '
 #     CXX_FLAGS += '-framework OpenGL '
