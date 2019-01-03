@@ -280,7 +280,6 @@ void SKEL(getStablePDForcesExtended)(int wid, int skid, double h, double* inv1, 
     Eigen::VectorXd dq = skel->getVelocities();
     Eigen::VectorXd Kp = read(inv1, indofs1);
     Eigen::VectorXd Kd = read(inv2, indofs2);
-    std::cout << Eigen::nbThreads() << std::endl;
 
     Eigen::VectorXd p_d = Kp.cwiseProduct(skel->getPositionDifferences(read(inv3, indofs3), skel->getPositions()) - h * dq) -  Kd.cwiseProduct(dq);
 //    Eigen::VectorXd tau = p_d - h * Kd.cwiseProduct(
