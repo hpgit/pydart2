@@ -343,6 +343,9 @@ class Skeleton(object):
     def dC(self):
         return self.com_velocity()
 
+    def com_spatial_velocity(self):
+        return papi.skeleton__getCOMSpatialVelocity(self.world.id, self.id)
+
     def com_acceleration(self):
         return papi.skeleton__getCOMLinearAcceleration(self.world.id, self.id)
 

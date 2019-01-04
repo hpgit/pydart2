@@ -236,6 +236,11 @@ void SKEL(getCOMLinearAcceleration)(int wid, int skid, double outv3[3]) {
    write(skel->getCOMLinearAcceleration(), outv3);
 }
 
+void SKEL(getCOMSpatialVelocity)(int wid, int skid, double outv6[6]) {
+    dart::dynamics::SkeletonPtr skel = GET_SKELETON(wid, skid);
+    write(skel->getCOMSpatialVelocity(), outv6);
+}
+
 ////////////////////////////////////////
 // Skeleton::Lagrangian Functions
 void SKEL(getMassMatrix)(int wid, int skid, double* outm, int nrows, int ncols) {

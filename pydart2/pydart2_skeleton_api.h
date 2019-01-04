@@ -63,6 +63,7 @@ void SKEL(getForceUpperLimits)(int wid, int skid, double* outv, int ndofs);
 void SKEL(getCOM)(int wid, int skid, double outv3[3]);
 void SKEL(getCOMLinearVelocity)(int wid, int skid, double outv3[3]);
 void SKEL(getCOMLinearAcceleration)(int wid, int skid, double outv3[3]);
+void SKEL(getCOMSpatialVelocity)(int wid, int skid, double outv6[6]);
 
 ////////////////////////////////////////
 // Skeleton::Lagrangian Functions
