@@ -43,7 +43,7 @@ class CollisionResult(object):
 
         # contacts
         n = papi.collisionresult__getNumContacts(self.id)
-        v = papi.collisionresult__getContacts(self.id, n * 10)
+        v = papi.collisionresult__getContacts(self.id, n * 12)
         if n > 0:
             self.contacts = [Contact(self.world, v_i)
                              for v_i in np.split(v, n)]

@@ -20,8 +20,11 @@ class Contact(object):
         self.force = _state[3:6]
         self.skel_id1 = int(_state[6])
         self.bodynode_id1 = int(_state[7])
-        self.skel_id2 = int(_state[8])
-        self.bodynode_id2 = int(_state[9])
+        self.shape_id1 = int(_state[8])
+
+        self.skel_id2 = int(_state[9])
+        self.bodynode_id2 = int(_state[10])
+        self.shape_id2 = int(_state[11])
 
         # self.skel_id1, self.bodynode_id1 = _state[6:8]
         # self.skel_id2, self.bodynode_id2 = _state[8:10]

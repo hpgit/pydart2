@@ -92,9 +92,9 @@ void COLLISION_RESULT(getContacts)(int wid, double* outv, int nout) {
         indices[world->getSkeleton(i).get()] = i;
     }
 
-    Eigen::VectorXd state(10 * nContacts);
+    Eigen::VectorXd state(12 * nContacts);
     for (auto i = 0; i < nContacts; ++i) {
-        auto begin = i * 10;
+        auto begin = i * 12;
         auto contact = result.getContact(i);
 
         state.segment(begin, 3)     = contact.point;
@@ -103,19 +103,23 @@ void COLLISION_RESULT(getContacts)(int wid, double* outv, int nout) {
         state(begin + 7) = -1;
         state(begin + 8) = -1;
         state(begin + 9) = -1;
+        state(begin + 10) = -1;
+        state(begin + 11) = -1;
 
         auto shapeNode1 = contact.collisionObject1->getShapeFrame()->asShapeNode();
         if (shapeNode1) {
             auto b = shapeNode1->getBodyNodePtr();
             state(begin + 6) = indices[b->getSkeleton().get()];
             state(begin + 7) = b->getIndexInSkeleton();
+            state(begin + 8) = shapeNode1->getIndexInBodyNode();
         }
 
         auto shapeNode2 = contact.collisionObject2->getShapeFrame()->asShapeNode();
         if (shapeNode2) {
             auto b = shapeNode2->getBodyNodePtr();
-            state(begin + 8) = indices[b->getSkeleton().get()];
-            state(begin + 9) = b->getIndexInSkeleton();
+            state(begin + 9) = indices[b->getSkeleton().get()];
+            state(begin + 10) = b->getIndexInSkeleton();
+            state(begin + 11) = shapeNode2->getIndexInBodyNode();
         }
     }
     write(state, outv);
