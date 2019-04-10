@@ -95,5 +95,11 @@ class ShapeNode(object):
                                              self.bid,
                                              self.id, transform)
 
+    def world_transform(self, ):
+        return papi.shapenode__getWorldTransform(self.wid,
+                                                 self.skid,
+                                                 self.bid,
+                                                 self.id)
+
     def __repr__(self):
         return '[ShapeNode(%d:%d)]' % (self.bid, self.id)

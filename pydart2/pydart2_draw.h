@@ -25,8 +25,8 @@
 #include "dart/gui/glut/GraphWindow.hpp"
 //#include "dart/gui/LoadGlut.hpp"
 //#include "dart/gui/GraphWindow.hpp"
-//#include "dart/utils/FileInfoWorld.hpp"
-#include "dart/io/FileInfoWorld.hpp"
+#include "dart/utils/FileInfoWorld.hpp"
+//#include "dart/io/FileInfoWorld.hpp"
 
 
 void drawWorld(

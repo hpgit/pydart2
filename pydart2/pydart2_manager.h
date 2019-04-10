@@ -12,10 +12,10 @@
 #include "dart/collision/ode/OdeCollisionDetector.hpp"
 #endif
 #include "dart/gui/gui.hpp"
-//#include "dart/utils/utils.hpp"
-//#include "dart/utils/urdf/DartLoader.hpp"
-#include "dart/io/io.hpp"
-#include "dart/io/urdf/DartLoader.hpp"
+#include "dart/utils/utils.hpp"
+#include "dart/utils/urdf/DartLoader.hpp"
+//#include "dart/io/io.hpp"
+//#include "dart/io/urdf/DartLoader.hpp"
 
 namespace pydart {
 

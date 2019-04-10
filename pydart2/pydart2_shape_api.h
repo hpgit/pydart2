@@ -14,6 +14,7 @@ void SHAPENODE(getOffset)(int wid, int skid, int bid, int sid, double outv3[3]);
 void SHAPENODE(setOffset)(int wid, int skid, int bid, int sid, double inv3[3]);
 void SHAPENODE(getRelativeTransform)(int wid, int skid, int bid, int sid, double outv44[4][4]);
 void SHAPENODE(setRelativeTransform)(int wid, int skid, int bid, int sid, double inv44[4][4]);
+void SHAPENODE(getWorldTransform)(int wid, int skid, int bid, int sid, double outv44[4][4]);
 
 bool SHAPENODE(hasVisualAspect)(int wid, int skid, int bid, int sid);
 bool SHAPENODE(hasCollisionAspect)(int wid, int skid, int bid, int sid);

@@ -42,6 +42,13 @@ void SHAPENODE(setRelativeTransform)(int wid, int skid, int bid, int sid, double
     shapenode->setRelativeTransform(read_isometry(inv44));
 }
 
+
+void SHAPENODE(getWorldTransform)(int wid, int skid, int bid, int sid, double outv44[4][4]) {
+    dart::dynamics::ShapeNode* shapenode = GET_SHAPENODE(wid, skid, bid, sid);
+    write_isometry(shapenode->getWorldTransform(), outv44);
+}
+
+
 bool SHAPENODE(hasVisualAspect)(int wid, int skid, int bid, int sid) {
     dart::dynamics::ShapeNode* shapenode = GET_SHAPENODE(wid, skid, bid, sid);
     return shapenode->has<dart::dynamics::VisualAspect>();
