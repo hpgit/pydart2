@@ -21,3 +21,11 @@ class BallJointConstraint(object):
                                     self.body2.skid,
                                     self.body2.id,
                                     self.jointPos)
+
+class NonHolonomicContactConstraint(object):
+    def __init__(self, body1, offset):
+        self.body1 = body1
+        self.offset = offset
+
+    def add_to_world(self, world):
+        papi.addNonHolonomicContactConstraint(world.id, self.body1.skid, self.body1.id, self.offset)

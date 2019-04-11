@@ -18,6 +18,8 @@ using std::endl;
 
 #include "pydart2_draw.h"
 
+#include "NonHolonomicContactConstraint.h"
+
 using namespace pydart;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -160,6 +162,19 @@ int addBallJointConstraint(int wid, int skid1, int bid1, int skid2, int bid2,
     // MSG << jointPos << "\n";
     dart::constraint::BallJointConstraintPtr cl =
         std::make_shared<dart::constraint::BallJointConstraint>(bd1, bd2, jointPos);
+    world->getConstraintSolver()->addConstraint(cl);
+    return 0;
+}
+
+int addNonHolonomicContactConstraint(int wid, int skid1, int bid1, double inv3[3])
+{
+    dart::simulation::WorldPtr world = GET_WORLD(wid);
+    dart::dynamics::BodyNodePtr bd1 = GET_BODY(wid, skid1, bid1);
+    Eigen::Vector3d offset = read(inv3, 3);
+    dart::constraint::NonHolonomicContactConstraintPtr cl =
+            std::make_shared<dart::constraint::NonHolonomicContactConstraint>(bd1, offset);
+    Manager *manager = Manager::getInstance();
+
     world->getConstraintSolver()->addConstraint(cl);
     return 0;
 }

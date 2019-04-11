@@ -17,6 +17,8 @@
 //#include "dart/io/io.hpp"
 //#include "dart/io/urdf/DartLoader.hpp"
 
+#include "NonHolonomicContactConstraint.h"
+
 namespace pydart {
 
 ////////////////////////////////////////////////////////////
@@ -45,6 +47,8 @@ protected:
     // std::vector<dart::simulation::WorldPtr> worlds;
     int next_id;
     std::map<int, dart::simulation::WorldPtr> worlds;
+    int next_nhconstraint_id;
+    std::map<int, dart::constraint::NonHolonomicContactConstraint> nhconstraints;
 
 };
 
