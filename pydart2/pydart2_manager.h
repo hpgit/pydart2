@@ -39,7 +39,13 @@ public:
     static int createWorldFromSkel(const char* const path);
     static int createWorldFromSkelXML(const std::string &xmlstr);
     static void destroyWorld(int id);
+
+    static int createNHCConstraint(int wid, int skid, int bid, const Eigen::Vector3d& offset);
+    static dart::constraint::NonHolonomicContactConstraintPtr nhconstraint(int index);
+    static int nhconstraint_wid(int index);
+
     static bool g_verbose;
+
 protected:
     static Manager* g_manager;
     static dart::gui::RenderInterface* g_ri;
@@ -48,7 +54,9 @@ protected:
     int next_id;
     std::map<int, dart::simulation::WorldPtr> worlds;
     int next_nhconstraint_id;
-    std::map<int, dart::constraint::NonHolonomicContactConstraint> nhconstraints;
+    std::map<int, dart::constraint::NonHolonomicContactConstraintPtr> nhconstraints;
+    std::vector<int> nhconstraints_wid;
+    std::vector<int> nhconstraints_skid;
 
 };
 

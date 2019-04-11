@@ -97,8 +97,10 @@ namespace dart {
             {
                 mViolation = localProjectedPerpVector.dot(mOffset1 - mBodyNode1->getTransform().inverse() * mOffset2);
                 double violationOffset = dLengthForViolationIgnore * sin(dViolationAngleIgnoreThreshold);
-                if(mViolation > violationOffset)
+                if(abs(mViolation) > abs(violationOffset))
                     mViolation -= copysign(violationOffset, mViolation);
+                else
+                    mViolation = 0.;
             }
 
             //  std::cout << "mViolation = " << mViolation << std::endl;

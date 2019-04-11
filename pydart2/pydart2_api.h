@@ -47,7 +47,13 @@ void COLLISION_RESULT(renderContact)(double inv6[6], double size, double scale);
 int addBallJointConstraint(int wid, int skid1, int bid1, int skid2, int bid2,
                            double inv3[3]);
 
-int addNonHolonomicContactConstraint(int wid, int skid1, int bid1, double inv3[3]);
+int createNonHolonomicContactConstraint(int wid, int skid, int bid, double inv3[3]);
+int addNonHolonomicContactConstraint(int nhcid);
+int setViolationAngleIgnoreThreshold(int nhcid, double th);
+int setLengthForViolationIgnore(int nhcid, double length);
+int setNonHolonomicContactConstraintActivate(int nhcid, bool activate);
+int setNonHolonomicContactConstraintJointPos(int nhcid, double inv3[3]);
+int setNonHolonomicContactConstraintProjectedVector(int nhcid, double inv3[3]);
 
 
 #endif // #ifndef PYDART2_PYDART2_API_H

@@ -166,15 +166,55 @@ int addBallJointConstraint(int wid, int skid1, int bid1, int skid2, int bid2,
     return 0;
 }
 
-int addNonHolonomicContactConstraint(int wid, int skid1, int bid1, double inv3[3])
+int createNonHolonomicContactConstraint(int wid, int skid, int bid, double inv3[3])
 {
-    dart::simulation::WorldPtr world = GET_WORLD(wid);
-    dart::dynamics::BodyNodePtr bd1 = GET_BODY(wid, skid1, bid1);
     Eigen::Vector3d offset = read(inv3, 3);
-    dart::constraint::NonHolonomicContactConstraintPtr cl =
-            std::make_shared<dart::constraint::NonHolonomicContactConstraint>(bd1, offset);
-    Manager *manager = Manager::getInstance();
+    return Manager::createNHCConstraint(wid, skid, bid, offset);
+}
 
-    world->getConstraintSolver()->addConstraint(cl);
+int addNonHolonomicContactConstraint(int nhcid)
+{
+    int wid = Manager::nhconstraint_wid(nhcid);
+    dart::simulation::WorldPtr world = GET_WORLD(wid);
+    world->getConstraintSolver()->addConstraint(Manager::nhconstraint(nhcid));
+
+    return 0;
+}
+
+int setViolationAngleIgnoreThreshold(int nhcid, double th)
+{
+    dart::constraint::NonHolonomicContactConstraintPtr cl = Manager::nhconstraint(nhcid);
+    cl->setViolationAngleIgnoreThreshold(th);
+    return 0;
+}
+
+int setLengthForViolationIgnore(int nhcid, double length)
+{
+    dart::constraint::NonHolonomicContactConstraintPtr cl = Manager::nhconstraint(nhcid);
+    cl->setLengthForViolationIgnore(length);
+    return 0;
+}
+
+
+int setNonHolonomicContactConstraintActivate(int nhcid, bool activate)
+{
+    dart::constraint::NonHolonomicContactConstraintPtr cl = Manager::nhconstraint(nhcid);
+    cl->activate(activate);
+    return 0;
+}
+
+int setNonHolonomicContactConstraintJointPos(int nhcid, double inv3[3])
+{
+    dart::constraint::NonHolonomicContactConstraintPtr cl = Manager::nhconstraint(nhcid);
+    Eigen::Vector3d jointPos = read(inv3, 3);
+    cl->setJointPos(jointPos);
+    return 0;
+}
+
+int setNonHolonomicContactConstraintProjectedVector(int nhcid, double inv3[3])
+{
+    dart::constraint::NonHolonomicContactConstraintPtr cl = Manager::nhconstraint(nhcid);
+    Eigen::Vector3d projectedVector = read(inv3, 3);
+    cl->setProjectedVector(projectedVector);
     return 0;
 }

@@ -39,6 +39,7 @@ void Manager::init() {
 
     // MSG << " [pydart2_api] RI init OK...\n";
     g_manager->next_id = 0;
+    g_manager->next_nhconstraint_id = 0;
     // if (verbose) dtmsg << "Hello!";
     // MSG << " [pydart2_api] Initialize pydart manager OK\n";
 }
@@ -121,6 +122,29 @@ void Manager::destroyWorld(int id) {
     MSG << " [pydart2_api] worlds.size = " << manager->worlds.size() << "\n";
     // w.reset();
     MSG << " [pydart2_api] Destroy world OK: " << id << "\n";
+}
+
+int Manager::createNHCConstraint(int wid, int skid, int bid, const Eigen::Vector3d& offset)
+{
+    Manager* manager = getInstance();
+    int id = manager->next_nhconstraint_id++;
+    dart::dynamics::BodyNodePtr bd = skeleton(wid, skid)->getBodyNode(bid);
+    dart::constraint::NonHolonomicContactConstraintPtr cl =
+            std::make_shared<dart::constraint::NonHolonomicContactConstraint>(bd, offset);
+    manager->nhconstraints[id] = cl;
+    manager->nhconstraints_wid.push_back(wid);
+
+    return id;
+}
+
+dart::constraint::NonHolonomicContactConstraintPtr Manager::nhconstraint(int index)
+{
+    return getInstance()->nhconstraints[index];
+}
+
+int Manager::nhconstraint_wid(int index)
+{
+    return getInstance()->nhconstraints_wid[index];
 }
 
 // class Manager
