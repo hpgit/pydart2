@@ -147,6 +147,29 @@ int Manager::nhconstraint_wid(int index)
     return getInstance()->nhconstraints_wid[index];
 }
 
+int Manager::createNHCConstraintV2(int wid, int skid, int bid, const Eigen::Vector3d& offset)
+{
+    Manager* manager = getInstance();
+    int id = manager->next_nhconstraint_idV2++;
+    dart::dynamics::BodyNodePtr bd = skeleton(wid, skid)->getBodyNode(bid);
+    dart::constraint::NonHolonomicContactConstraintV2Ptr cl =
+            std::make_shared<dart::constraint::NonHolonomicContactConstraintV2>(bd, offset);
+    manager->nhconstraintsV2[id] = cl;
+    manager->nhconstraints_widV2.push_back(wid);
+
+    return id;
+}
+
+dart::constraint::NonHolonomicContactConstraintV2Ptr Manager::nhconstraintV2(int index)
+{
+    return getInstance()->nhconstraintsV2[index];
+}
+
+int Manager::nhconstraint_widV2(int index)
+{
+    return getInstance()->nhconstraints_widV2[index];
+}
+
 // class Manager
 ////////////////////////////////////////////////////////////
 

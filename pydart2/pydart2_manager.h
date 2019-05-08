@@ -18,6 +18,7 @@
 //#include "dart/io/urdf/DartLoader.hpp"
 
 #include "NonHolonomicContactConstraint.h"
+#include "NonHolonomicContactConstraint_v2.h"
 
 namespace pydart {
 
@@ -44,6 +45,10 @@ public:
     static dart::constraint::NonHolonomicContactConstraintPtr nhconstraint(int index);
     static int nhconstraint_wid(int index);
 
+    static int createNHCConstraintV2(int wid, int skid, int bid, const Eigen::Vector3d& offset);
+    static dart::constraint::NonHolonomicContactConstraintV2Ptr nhconstraintV2(int index);
+    static int nhconstraint_widV2(int index);
+
     static bool g_verbose;
 
 protected:
@@ -57,6 +62,11 @@ protected:
     std::map<int, dart::constraint::NonHolonomicContactConstraintPtr> nhconstraints;
     std::vector<int> nhconstraints_wid;
     std::vector<int> nhconstraints_skid;
+
+    int next_nhconstraint_idV2;
+    std::map<int, dart::constraint::NonHolonomicContactConstraintV2Ptr> nhconstraintsV2;
+    std::vector<int> nhconstraints_widV2;
+    std::vector<int> nhconstraints_skidV2;
 
 };
 

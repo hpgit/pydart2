@@ -218,3 +218,34 @@ int setNonHolonomicContactConstraintProjectedVector(int nhcid, double inv3[3])
     cl->setProjectedVector(projectedVector);
     return 0;
 }
+
+
+int createNonHolonomicContactConstraintV2(int wid, int skid, int bid, double inv3[3])
+{
+    Eigen::Vector3d offset = read(inv3, 3);
+    return Manager::createNHCConstraintV2(wid, skid, bid, offset);
+}
+
+int addNonHolonomicContactConstraintV2(int nhcid)
+{
+    int wid = Manager::nhconstraint_widV2(nhcid);
+    dart::simulation::WorldPtr world = GET_WORLD(wid);
+    world->getConstraintSolver()->addConstraint(Manager::nhconstraintV2(nhcid));
+
+    return 0;
+}
+
+int setViolationAngleIgnoreThresholdV2(int nhcid, double th)
+{
+    dart::constraint::NonHolonomicContactConstraintV2Ptr cl = Manager::nhconstraintV2(nhcid);
+    cl->setViolationAngleIgnoreThreshold(th);
+    return 0;
+}
+
+int setNonHolonomicContactConstraintActivateV2(int nhcid, bool activate)
+{
+    dart::constraint::NonHolonomicContactConstraintV2Ptr cl = Manager::nhconstraintV2(nhcid);
+    cl->activate(activate);
+    return 0;
+}
+

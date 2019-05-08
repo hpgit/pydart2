@@ -3,7 +3,7 @@
 //
 
 #include <iostream>
-#include "NonHolonomicContactConstraint.h"
+#include "NonHolonomicContactConstraint_v2.h"
 
 #include "dart/external/odelcpsolver/lcp.h"
 
@@ -14,17 +14,17 @@
 
 namespace dart {
     namespace constraint {
-        NonHolonomicContactConstraint::NonHolonomicContactConstraint(dart::dynamics::BodyNode *_body,
+        NonHolonomicContactConstraintV2::NonHolonomicContactConstraintV2(dart::dynamics::BodyNode *_body,
                                                                     const Eigen::Vector3d &offsetOnBodyCoord)
                  :JointConstraint(_body),
                 mOffset1(offsetOnBodyCoord),
                 mOffset2(Eigen::Vector3d::Zero()),
+                mBodyPos(Eigen::Vector3d::Zero()),
                 mViolation(0.),
                 mDesiredProjectedVector(Eigen::Vector3d(1., 0, 0)),
                 mAppliedImpulseIndex(0),
                 bActive(false),
-                dViolationAngleIgnoreThreshold(0.),
-                dLengthForViolationIgnore(0.)
+                dViolationAngleIgnoreThreshold(0.)
         {
             mDim = 1;
 
@@ -34,18 +34,11 @@ namespace dart {
             mJacobian1(0, 5) = 1.;
         }
 
-        void NonHolonomicContactConstraint::setJointPos(const Eigen::Vector3d &_jointPos) {
-            mOffset2 = _jointPos;
+        void NonHolonomicContactConstraintV2::setPrevBodyNodePos(const Eigen::Vector3d &_bodyPos) {
+            mPrevBodyPos = _bodyPos;
         }
 
-        void NonHolonomicContactConstraint::setProjectedVector(const Eigen::Vector3d &_projectedVector) {
-            assert(_projectedVector.norm() > 0.);
-            mDesiredProjectedVector = _projectedVector;
-            mDesiredProjectedVector(1) = 0.;
-            mDesiredProjectedVector.normalize();
-        }
-
-        void NonHolonomicContactConstraint::update() {
+        void NonHolonomicContactConstraintV2::update() {
             // mBodyNode1 should not be null pointer ever
             assert(mBodyNode1);
 #ifdef HP_DEBUG
@@ -61,6 +54,19 @@ namespace dart {
 //                bActive = false;
 //                return;
 //            }
+
+            mDesiredProjectedVector = mBodyNode1->getTransform() * Eigen::Vector3d::(0., 0., 0.) - mPrevBodyPos;
+            mDesiredProjectedVector[1] = 0.;
+            if (mDesiredProjectedVector.norm() < 0.000001)
+            {
+                mDesiredProjectedVector = mBodyNode1->getTransform() * mOffset1 - mPrevBodyPos;
+                mDesiredProjectedVector[1] = 0.;
+            }
+            mDesiredProjectedVector.normalize();
+
+            mOffset2 = mBodyNode1->getTransform() * mOffset1;
+            mOffset2[1] = 0.;
+
 
             // Jacobian update
             Eigen::Vector3d localProjectedPerpVector = mBodyNode1->getTransform().linear().inverse() * mDesiredProjectedVector.cross(Eigen::Vector3d(0., 1., 0.));
@@ -100,7 +106,7 @@ namespace dart {
             //  std::cout << "mViolation = " << mViolation << std::endl;
         }
 
-        void NonHolonomicContactConstraint::getInformation(ConstraintInfo *_lcp) {
+        void NonHolonomicContactConstraintV2::getInformation(ConstraintInfo *_lcp) {
 #ifdef HP_DEBUG
             std::cout << "getInformation()" << std::endl;
 #endif
@@ -120,7 +126,7 @@ namespace dart {
 
         }
 
-        void NonHolonomicContactConstraint::applyUnitImpulse(std::size_t _index) {
+        void NonHolonomicContactConstraintV2::applyUnitImpulse(std::size_t _index) {
 #ifdef HP_DEBUG
             std::cout << "applyUnitImpulse()" << std::endl;
 #endif
@@ -198,7 +204,7 @@ namespace dart {
 
         }
 
-        void NonHolonomicContactConstraint::getVelocityChange(double *_vel, bool _withCfm) {
+        void NonHolonomicContactConstraintV2::getVelocityChange(double *_vel, bool _withCfm) {
 #ifdef HP_DEBUG
             std::cout << "getVelocityChange()" << std::endl;
 #endif
@@ -237,7 +243,7 @@ namespace dart {
 
         }
 
-        void NonHolonomicContactConstraint::excite() {
+        void NonHolonomicContactConstraintV2::excite() {
 #ifdef HP_DEBUG
             std::cout << "excite()" << std::endl;
 #endif
@@ -251,7 +257,7 @@ namespace dart {
                 mBodyNode2->getSkeleton()->setImpulseApplied(true);
         }
 
-        void NonHolonomicContactConstraint::unexcite() {
+        void NonHolonomicContactConstraintV2::unexcite() {
 #ifdef HP_DEBUG
             std::cout << "unexcite()" << std::endl;
 #endif
@@ -265,7 +271,7 @@ namespace dart {
                 mBodyNode2->getSkeleton()->setImpulseApplied(false);
         }
 
-        void NonHolonomicContactConstraint::applyImpulse(double *_lambda) {
+        void NonHolonomicContactConstraintV2::applyImpulse(double *_lambda) {
 #ifdef HP_DEBUG
             std::cout << "applyImpulse()" << std::endl;
 #endif
@@ -282,7 +288,7 @@ namespace dart {
                 mBodyNode2->addConstraintImpulse(-mJacobian2.transpose() * imp);
         }
 
-        dynamics::SkeletonPtr NonHolonomicContactConstraint::getRootSkeleton() const {
+        dynamics::SkeletonPtr NonHolonomicContactConstraintV2::getRootSkeleton() const {
 #ifdef HP_DEBUG
             std::cout << "getRootSkeleton()" << std::endl;
 #endif
@@ -308,7 +314,7 @@ namespace dart {
             }
         }
 
-        void NonHolonomicContactConstraint::uniteSkeletons() {
+        void NonHolonomicContactConstraintV2::uniteSkeletons() {
 #ifdef HP_DEBUG
             std::cout << "uniteSkeletons()" << std::endl;
 #endif
@@ -343,7 +349,7 @@ namespace dart {
             }
         }
 
-        bool NonHolonomicContactConstraint::isActive() const {
+        bool NonHolonomicContactConstraintV2::isActive() const {
 #ifdef HP_DEBUG
             std::cout << "isActive()" << std::endl;
 #endif

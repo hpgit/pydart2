@@ -58,3 +58,26 @@ class NonHolonomicContactConstraint(object):
         papi.setNonHolonomicContactConstraintProjectedVector(self.id, vec)
 
 
+class NonHolonomicContactConstraintV2(object):
+    def __init__(self, body1, offset):
+        """
+
+        :param body1:
+        :type body1: BodyNode
+        :param offset:
+        """
+        self.body1 = body1
+        self.offset = offset
+        self.id = papi.createNonHolonomicContactConstraintV2(body1.wid, body1.skid, body1.id, self.offset)
+        self.added = False
+
+    def add_to_world(self):
+        if not self.added:
+            papi.addNonHolonomicContactConstraintV2(self.id)
+            self.added = True
+
+    def activate(self, _activate=True):
+        papi.setNonHolonomicContactConstraintActivateV2(self.id, _activate)
+
+    def set_violation_angle_ignore_threshold(self, th):
+        papi.setViolationAngleIgnoreThresholdV2(self.id, th)
