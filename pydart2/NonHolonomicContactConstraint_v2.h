@@ -43,6 +43,8 @@ namespace dart{
 
             void setPrevBodyNodePos(const Eigen::Vector3d& _bodyPos);
 
+            void setPrevBodyNodeVec(const Eigen::Vector3d& _bodyVec);
+
             void setViolationAngleIgnoreThreshold(double _threshold){dViolationAngleIgnoreThreshold = _threshold;}
 
         private:
@@ -62,6 +64,9 @@ namespace dart{
 
             /// prev body1 position in World Frame
             Eigen::Vector3d mPrevBodyPos;
+
+            /// prev body1 vector in World Frame
+            Eigen::Vector3d mPrevBodyVec;
 
             /// projected vector expressed in World Frame
             Eigen::Vector3d mDesiredProjectedVector;

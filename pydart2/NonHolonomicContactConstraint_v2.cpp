@@ -12,6 +12,10 @@
 
 //#define HP_DEBUG
 
+#ifndef _USE_MATH_DEFINES
+#define _USE_MATH_DEFINES
+#endif // _USE_MATH_DEFINES
+
 namespace dart {
     namespace constraint {
         NonHolonomicContactConstraintV2::NonHolonomicContactConstraintV2(dart::dynamics::BodyNode *_body,
@@ -20,8 +24,9 @@ namespace dart {
                 mOffset1(offsetOnBodyCoord),
                 mOffset2(Eigen::Vector3d::Zero()),
                 mBodyPos(Eigen::Vector3d::Zero()),
+                mBodyVec(Eigen::Vector3d(1., 0., 0.)),
                 mViolation(0.),
-                mDesiredProjectedVector(Eigen::Vector3d(1., 0, 0)),
+                mDesiredProjectedVector(Eigen::Vector3d(1., 0., 0.)),
                 mAppliedImpulseIndex(0),
                 bActive(false),
                 dViolationAngleIgnoreThreshold(0.)
@@ -36,6 +41,12 @@ namespace dart {
 
         void NonHolonomicContactConstraintV2::setPrevBodyNodePos(const Eigen::Vector3d &_bodyPos) {
             mPrevBodyPos = _bodyPos;
+        }
+
+        void NonHolonomicContactConstraintV2::setPrevBodyNodeVec(const Eigen::Vector3d &_bodyVec) {
+            mPrevBodyVec = _bodyVec;
+            mPrevBodyVec[1] = 0.;
+            mPrevBodyVec.normalize();
         }
 
         void NonHolonomicContactConstraintV2::update() {
@@ -55,6 +66,7 @@ namespace dart {
 //                return;
 //            }
 
+            // calculate direction vector
             mDesiredProjectedVector = mBodyNode1->getTransform() * Eigen::Vector3d::(0., 0., 0.) - mPrevBodyPos;
             mDesiredProjectedVector[1] = 0.;
             if (mDesiredProjectedVector.norm() < 0.000001)
@@ -63,6 +75,14 @@ namespace dart {
                 mDesiredProjectedVector[1] = 0.;
             }
             mDesiredProjectedVector.normalize();
+
+            double violated_angle = acos(mDesiredProjectedVector.dot(mPrevBodyVec));
+            if (violated_angle > dViolationAngleIgnoreThreshold && violated_angle < M_PI - dViolationAngleIgnoreThreshold )
+            {
+                // violated angle case
+                mDesiredProjectedVector =
+
+            }
 
             mOffset2 = mBodyNode1->getTransform() * mOffset1;
             mOffset2[1] = 0.;
