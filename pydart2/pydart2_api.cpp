@@ -249,3 +249,19 @@ int setNonHolonomicContactConstraintActivateV2(int nhcid, bool activate)
     return 0;
 }
 
+int setNonHolonomicContactConstraintPrevBodyPosV2(int nhcid, double inv3[3])
+{
+    dart::constraint::NonHolonomicContactConstraintV2Ptr cl = Manager::nhconstraintV2(nhcid);
+    Eigen::Vector3d bodyPos = read(inv3, 3);
+    cl->setPrevBodyNodePos(bodyPos);
+    return 0;
+}
+
+int setNonHolonomicContactConstraintPrevProjectedVectorV2(int nhcid, double inv3[3])
+{
+    dart::constraint::NonHolonomicContactConstraintV2Ptr cl = Manager::nhconstraintV2(nhcid);
+    Eigen::Vector3d projectedVector = read(inv3, 3);
+    cl->setPrevBodyNodeVec(projectedVector);
+    return 0;
+}
+

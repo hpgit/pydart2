@@ -23,12 +23,12 @@ namespace dart {
                  :JointConstraint(_body),
                 mOffset1(offsetOnBodyCoord),
                 mOffset2(Eigen::Vector3d::Zero()),
-                mBodyPos(Eigen::Vector3d::Zero()),
-                mBodyVec(Eigen::Vector3d(1., 0., 0.)),
-                mViolation(0.),
+                mPrevBodyPos(Eigen::Vector3d::Zero()),
+                mPrevBodyVec(Eigen::Vector3d(1., 0., 0.)),
                 mDesiredProjectedVector(Eigen::Vector3d(1., 0., 0.)),
-                mAppliedImpulseIndex(0),
+                mViolation(0.),
                 bActive(false),
+                mAppliedImpulseIndex(0),
                 dViolationAngleIgnoreThreshold(0.)
         {
             mDim = 1;
@@ -67,7 +67,8 @@ namespace dart {
 //            }
 
             // calculate direction vector
-            mDesiredProjectedVector = mBodyNode1->getTransform() * Eigen::Vector3d::(0., 0., 0.) - mPrevBodyPos;
+            Eigen::Vector3d ori_direction = mBodyNode1->getTransform().translation() - mPrevBodyPos;
+            mDesiredProjectedVector = ori_direction;
             mDesiredProjectedVector[1] = 0.;
             if (mDesiredProjectedVector.norm() < 0.000001)
             {
@@ -77,16 +78,30 @@ namespace dart {
             mDesiredProjectedVector.normalize();
 
             double violated_angle = acos(mDesiredProjectedVector.dot(mPrevBodyVec));
-            if (violated_angle > dViolationAngleIgnoreThreshold && violated_angle < M_PI - dViolationAngleIgnoreThreshold )
-            {
+            if (violated_angle > dViolationAngleIgnoreThreshold && violated_angle < M_PI - dViolationAngleIgnoreThreshold ) {
                 // violated angle case
-                mDesiredProjectedVector =
-
+                int min_violated_idx = 0;
+                double max_violated_cosval = -1.;
+                Eigen::Vector3d dir[4];
+                dir[0] = Eigen::AngleAxisd(dViolationAngleIgnoreThreshold, Eigen::Vector3d(0., 1., 0.)) * mDesiredProjectedVector;
+                dir[1] = Eigen::AngleAxisd(-dViolationAngleIgnoreThreshold, Eigen::Vector3d(0., 1., 0.)) * mDesiredProjectedVector;
+                dir[2] = -dir[0];
+                dir[3] = -dir[1];
+                for(int i=0; i<4; i++) {
+                    double value = ori_direction.normalized().dot(dir[i]);
+                    if(value > max_violated_cosval)
+                    {
+                        max_violated_cosval = value;
+                        min_violated_idx = i;
+                    }
+                }
+                mDesiredProjectedVector = ori_direction.norm() * dir[min_violated_idx];
             }
 
-            mOffset2 = mBodyNode1->getTransform() * mOffset1;
-            mOffset2[1] = 0.;
-
+            // set joint pos
+            Eigen::Vector3d projectedOffset1 = mOffset1;
+            projectedOffset1[1] = 0.;
+            mOffset2 = mPrevBodyPos + (ori_direction.norm() + projectedOffset1.norm()) * mDesiredProjectedVector;
 
             // Jacobian update
             Eigen::Vector3d localProjectedPerpVector = mBodyNode1->getTransform().linear().inverse() * mDesiredProjectedVector.cross(Eigen::Vector3d(0., 1., 0.));
@@ -138,7 +153,7 @@ namespace dart {
 
             _lcp->hi[0] = dInfinity;
 
-            Eigen::VectorXd negativeVel = -mJacobian1 * mBodyNode1->getSpatialVelocity();
+            Eigen::VectorXd negativeVel = (-mJacobian1) * mBodyNode1->getSpatialVelocity();
 
             mViolation *= mErrorReductionParameter * _lcp->invTimeStep;
 
@@ -304,8 +319,8 @@ namespace dart {
 
             mBodyNode1->addConstraintImpulse(mJacobian1.transpose() * imp);
 
-            if (mBodyNode2)
-                mBodyNode2->addConstraintImpulse(-mJacobian2.transpose() * imp);
+//            if (mBodyNode2)
+//                mBodyNode2->addConstraintImpulse(-mJacobian2.transpose() * imp);
         }
 
         dynamics::SkeletonPtr NonHolonomicContactConstraintV2::getRootSkeleton() const {

@@ -81,3 +81,9 @@ class NonHolonomicContactConstraintV2(object):
 
     def set_violation_angle_ignore_threshold(self, th):
         papi.setViolationAngleIgnoreThresholdV2(self.id, th)
+
+    def set_prev_body_pos(self, pos):
+        papi.setNonHolonomicContactConstraintPrevBodyPosV2(self.id, pos)
+
+    def set_prev_body_vec(self, vec):
+        papi.setNonHolonomicContactConstraintPrevProjectedVectorV2(self.id, vec)
