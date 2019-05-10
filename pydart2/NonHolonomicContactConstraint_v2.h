@@ -15,7 +15,9 @@ namespace dart{
         public:
             /// Constructor that takes one body and the joint position in the world frame
             /// \param[in] _jointPos Joint position expressed in world frame
-            NonHolonomicContactConstraintV2(dynamics::BodyNode* _body, const Eigen::Vector3d &offsetOnBodyCoord);
+            NonHolonomicContactConstraintV2(dynamics::BodyNode* _body,
+                    const Eigen::Vector3d &offsetOnBodyCoord1,
+                    const Eigen::Vector3d &offsetOnBodyCoord3);
 
             ~NonHolonomicContactConstraintV2() override {}
 
@@ -62,6 +64,14 @@ namespace dart{
             /// the offset is expressed in body frame 2
             Eigen::Vector3d mOffset2;
 
+            /// Offset from the origin of body frame 1 to the ball joint position where
+            /// the offset is expressed in body frame 1
+            Eigen::Vector3d mOffset3;
+
+            /// Offset from the origin of body frame 2 to the ball joint position where
+            /// the offset is expressed in body frame 2
+            Eigen::Vector3d mOffset4;
+
             /// prev body1 position in World Frame
             Eigen::Vector3d mPrevBodyPos;
 
@@ -72,16 +82,16 @@ namespace dart{
             Eigen::Vector3d mDesiredProjectedVector;
 
             /// Position constraint violation expressed in body frame 1
-            double mViolation;
+            double mViolation[2];
 
             /// Linear map between constraint space and Cartesian space for body1
-            Eigen::Matrix<double, 1, 6> mJacobian1;
+            Eigen::Matrix<double, 2, 6> mJacobian1;
 
             /// Linear map between constraint space and Cartesian space for body2
-            Eigen::Matrix<double, 1, 6> mJacobian2;
+            Eigen::Matrix<double, 2, 6> mJacobian2;
 
             ///
-            double mOldX[1];
+            double mOldX[2];
 
             /// Index of applied impulse
             std::size_t mAppliedImpulseIndex;

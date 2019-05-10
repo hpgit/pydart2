@@ -45,7 +45,7 @@ public:
     static dart::constraint::NonHolonomicContactConstraintPtr nhconstraint(int index);
     static int nhconstraint_wid(int index);
 
-    static int createNHCConstraintV2(int wid, int skid, int bid, const Eigen::Vector3d& offset);
+    static int createNHCConstraintV2(int wid, int skid, int bid, const Eigen::Vector3d& offset1, const Eigen::Vector3d& offset2);
     static dart::constraint::NonHolonomicContactConstraintV2Ptr nhconstraintV2(int index);
     static int nhconstraint_widV2(int index);
 

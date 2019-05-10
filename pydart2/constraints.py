@@ -59,16 +59,18 @@ class NonHolonomicContactConstraint(object):
 
 
 class NonHolonomicContactConstraintV2(object):
-    def __init__(self, body1, offset):
+    def __init__(self, body1, offset1, offset2):
         """
 
         :param body1:
         :type body1: BodyNode
-        :param offset:
+        :param offset1:
+        :param offset2:
         """
         self.body1 = body1
-        self.offset = offset
-        self.id = papi.createNonHolonomicContactConstraintV2(body1.wid, body1.skid, body1.id, self.offset)
+        self.offset1 = offset1
+        self.offset2 = offset2
+        self.id = papi.createNonHolonomicContactConstraintV2(body1.wid, body1.skid, body1.id, self.offset1, self.offset2)
         self.added = False
 
     def add_to_world(self):

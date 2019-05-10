@@ -19,24 +19,32 @@
 namespace dart {
     namespace constraint {
         NonHolonomicContactConstraintV2::NonHolonomicContactConstraintV2(dart::dynamics::BodyNode *_body,
-                                                                    const Eigen::Vector3d &offsetOnBodyCoord)
+                                                                    const Eigen::Vector3d& offsetOnBodyCoord1,
+                                                                    const Eigen::Vector3d& offsetOnBodyCoord3)
                  :JointConstraint(_body),
-                mOffset1(offsetOnBodyCoord),
+                  bActive(false),
+                  dViolationAngleIgnoreThreshold(0.),
+                mOffset1(offsetOnBodyCoord1),
                 mOffset2(Eigen::Vector3d::Zero()),
+                mOffset3(offsetOnBodyCoord3),
+                mOffset4(Eigen::Vector3d::Zero()),
                 mPrevBodyPos(Eigen::Vector3d::Zero()),
                 mPrevBodyVec(Eigen::Vector3d(1., 0., 0.)),
                 mDesiredProjectedVector(Eigen::Vector3d(1., 0., 0.)),
-                mViolation(0.),
-                bActive(false),
-                mAppliedImpulseIndex(0),
-                dViolationAngleIgnoreThreshold(0.)
+                mAppliedImpulseIndex(0)
         {
-            mDim = 1;
+            mDim = 2;
 
             mOldX[0] = 0.0;
+            mOldX[1] = 0.0;
+
+            mViolation[0] = 0.0;
+            mViolation[1] = 0.0;
 
             mJacobian1.setZero();
             mJacobian1(0, 5) = 1.;
+            mJacobian1(1, 5) = 1.;
+            mErrorReductionParameter = 0.005;
         }
 
         void NonHolonomicContactConstraintV2::setPrevBodyNodePos(const Eigen::Vector3d &_bodyPos) {
@@ -56,35 +64,31 @@ namespace dart {
             std::cout << "update()" << std::endl;
 #endif
 
-//            Eigen::Vector3d body_projected_vector = mBodyNode1->getTransform().linear() * Eigen::Vector3d(1., 0., 0.);
-//            body_projected_vector(1) = 0.;
-//            body_projected_vector.normalize();
-//
-//            if (body_projected_vector.dot(mDesiredProjectedVector) < dViolationAngleIgnoreThreshold)
-//            {
-//                bActive = false;
-//                return;
-//            }
-
             // calculate direction vector
             Eigen::Vector3d ori_direction = mBodyNode1->getTransform().translation() - mPrevBodyPos;
+            ori_direction[1] = 0.;
+//            std::cout << "ori_direction: " << ori_direction << std::endl;
             mDesiredProjectedVector = ori_direction;
-            mDesiredProjectedVector[1] = 0.;
+//            std::cout << "1mDesiredProjectedVector: " << mDesiredProjectedVector << std::endl;
+
             if (mDesiredProjectedVector.norm() < 0.000001)
             {
-                mDesiredProjectedVector = mBodyNode1->getTransform() * mOffset1 - mPrevBodyPos;
-                mDesiredProjectedVector[1] = 0.;
+//                mDesiredProjectedVector = mBodyNode1->getTransform() * mOffset1 - mPrevBodyPos;
+                mDesiredProjectedVector = mPrevBodyVec;
+//                std::cout << "2mDesiredProjectedVector: " << mDesiredProjectedVector << std::endl;
             }
             mDesiredProjectedVector.normalize();
+//            std::cout << "3mDesiredProjectedVector: " << mDesiredProjectedVector << std::endl;
 
             double violated_angle = acos(mDesiredProjectedVector.dot(mPrevBodyVec));
+//            std::cout << "violated_angle: " << violated_angle << std::endl;
             if (violated_angle > dViolationAngleIgnoreThreshold && violated_angle < M_PI - dViolationAngleIgnoreThreshold ) {
                 // violated angle case
                 int min_violated_idx = 0;
                 double max_violated_cosval = -1.;
                 Eigen::Vector3d dir[4];
-                dir[0] = Eigen::AngleAxisd(dViolationAngleIgnoreThreshold, Eigen::Vector3d(0., 1., 0.)) * mDesiredProjectedVector;
-                dir[1] = Eigen::AngleAxisd(-dViolationAngleIgnoreThreshold, Eigen::Vector3d(0., 1., 0.)) * mDesiredProjectedVector;
+                dir[0] = Eigen::AngleAxisd(dViolationAngleIgnoreThreshold, Eigen::Vector3d(0., 1., 0.)) * mPrevBodyVec;
+                dir[1] = Eigen::AngleAxisd(-dViolationAngleIgnoreThreshold, Eigen::Vector3d(0., 1., 0.)) * mPrevBodyVec;
                 dir[2] = -dir[0];
                 dir[3] = -dir[1];
                 for(int i=0; i<4; i++) {
@@ -95,19 +99,47 @@ namespace dart {
                         min_violated_idx = i;
                     }
                 }
-                mDesiredProjectedVector = ori_direction.norm() * dir[min_violated_idx];
+//                std::cout << "min_violated_idx: " << min_violated_idx<< std::endl;
+//                std::cout << "max_violated_cosval: " << max_violated_cosval << std::endl;
+//                std::cout << "dir[0]" << dir[0] << std::endl;
+//                std::cout << "dir[1]" << dir[1] << std::endl;
+//                std::cout << "dir[2]" << dir[2] << std::endl;
+//                std::cout << "dir[3]" << dir[3] << std::endl;
+                mDesiredProjectedVector = dir[min_violated_idx];
             }
+//            std::cout << "4mDesiredProjectedVector: " << mDesiredProjectedVector << std::endl;
 
             // set joint pos
             Eigen::Vector3d projectedOffset1 = mOffset1;
             projectedOffset1[1] = 0.;
-            mOffset2 = mPrevBodyPos + (ori_direction.norm() + projectedOffset1.norm()) * mDesiredProjectedVector;
+//            std::cout << "ori_direction.norm: " << ori_direction.norm() << std::endl;
+            if (mDesiredProjectedVector.dot(mPrevBodyVec) > 0.) {
+                mOffset2 = mPrevBodyPos + (ori_direction.norm() + projectedOffset1.norm()) * mDesiredProjectedVector;
+            }
+            else {
+                mOffset2 = mPrevBodyPos + (ori_direction.norm() - projectedOffset1.norm()) * mDesiredProjectedVector;
+            }
+            mOffset2[1] = 0.;
+            std::cout << "mOffset2: " << mOffset2 << std::endl;
+
+            Eigen::Vector3d projectedOffset3 = mOffset3;
+            projectedOffset3[1] = 0.;
+            if (mDesiredProjectedVector.dot(mPrevBodyVec) > 0.) {
+                mOffset4 = mPrevBodyPos + (ori_direction.norm() - projectedOffset3.norm()) * mDesiredProjectedVector;
+            }
+            else {
+                mOffset4 = mPrevBodyPos + (ori_direction.norm() + projectedOffset3.norm()) * mDesiredProjectedVector;
+            }
+            mOffset4[1] = 0.;
+            std::cout << "mOffset4: " << mOffset4 << std::endl;
 
             // Jacobian update
             Eigen::Vector3d localProjectedPerpVector = mBodyNode1->getTransform().linear().inverse() * mDesiredProjectedVector.cross(Eigen::Vector3d(0., 1., 0.));
             mJacobian1.setZero();
             mJacobian1.block<1, 3>(0, 0) = mOffset1.cross(localProjectedPerpVector);
             mJacobian1.block<1, 3>(0, 3) = localProjectedPerpVector;
+            mJacobian1.block<1, 3>(1, 0) = mOffset3.cross(localProjectedPerpVector);
+            mJacobian1.block<1, 3>(1, 3) = localProjectedPerpVector;
 
             // Update Jacobian for body2
             //TODO:
@@ -135,7 +167,8 @@ namespace dart {
             }
             else
             {
-                mViolation = localProjectedPerpVector.dot(mOffset1 - mBodyNode1->getTransform().inverse() * mOffset2);
+                mViolation[0] = localProjectedPerpVector.dot(mOffset1 - mBodyNode1->getTransform().inverse() * mOffset2);
+                mViolation[1] = localProjectedPerpVector.dot(mOffset3 - mBodyNode1->getTransform().inverse() * mOffset4);
             }
 
             //  std::cout << "mViolation = " << mViolation << std::endl;
@@ -146,18 +179,24 @@ namespace dart {
             std::cout << "getInformation()" << std::endl;
 #endif
             assert(_lcp->w[0] == 0.0);
+            assert(_lcp->w[1] == 0.0);
 
             assert(_lcp->findex[0] == -1);
+            assert(_lcp->findex[1] == -1);
 
             _lcp->lo[0] = -dInfinity;
+            _lcp->lo[1] = -dInfinity;
 
             _lcp->hi[0] = dInfinity;
+            _lcp->hi[1] = dInfinity;
 
             Eigen::VectorXd negativeVel = (-mJacobian1) * mBodyNode1->getSpatialVelocity();
 
-            mViolation *= mErrorReductionParameter * _lcp->invTimeStep;
+            mViolation[0] *= mErrorReductionParameter * _lcp->invTimeStep;
+            mViolation[1] *= mErrorReductionParameter * _lcp->invTimeStep;
 
-            _lcp->b[0] = negativeVel[0] - mViolation;
+            _lcp->b[0] = negativeVel[0] - mViolation[0];
+            _lcp->b[1] = negativeVel[1] - mViolation[1];
 
         }
 
@@ -311,9 +350,11 @@ namespace dart {
             std::cout << "applyImpulse()" << std::endl;
 #endif
             mOldX[0] = _lambda[0];
+            mOldX[1] = _lambda[1];
 
-            Eigen::VectorXd imp(1);
+            Eigen::VectorXd imp(2);
             imp(0) = _lambda[0];
+            imp(1) = _lambda[1];
 
             // std::cout << "lambda: " << _lambda[0] << " " << _lambda[1] << " " << _lambda[2] << std::endl;
 

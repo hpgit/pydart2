@@ -55,7 +55,7 @@ int setNonHolonomicContactConstraintActivate(int nhcid, bool activate);
 int setNonHolonomicContactConstraintJointPos(int nhcid, double inv3[3]);
 int setNonHolonomicContactConstraintProjectedVector(int nhcid, double inv3[3]);
 
-int createNonHolonomicContactConstraintV2(int wid, int skid, int bid, double inv3[3]);
+int createNonHolonomicContactConstraintV2(int wid, int skid, int bid, double inv3[3], double inv3_2[3]);
 int addNonHolonomicContactConstraintV2(int nhcid);
 int setViolationAngleIgnoreThresholdV2(int nhcid, double th);
 int setNonHolonomicContactConstraintActivateV2(int nhcid, bool activate);

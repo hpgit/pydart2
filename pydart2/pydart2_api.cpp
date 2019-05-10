@@ -220,10 +220,11 @@ int setNonHolonomicContactConstraintProjectedVector(int nhcid, double inv3[3])
 }
 
 
-int createNonHolonomicContactConstraintV2(int wid, int skid, int bid, double inv3[3])
+int createNonHolonomicContactConstraintV2(int wid, int skid, int bid, double inv3[3], double inv3_2[3])
 {
-    Eigen::Vector3d offset = read(inv3, 3);
-    return Manager::createNHCConstraintV2(wid, skid, bid, offset);
+    Eigen::Vector3d offset1 = read(inv3, 3);
+    Eigen::Vector3d offset2 = read(inv3_2, 3);
+    return Manager::createNHCConstraintV2(wid, skid, bid, offset1, offset2);
 }
 
 int addNonHolonomicContactConstraintV2(int nhcid)
