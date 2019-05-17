@@ -30,9 +30,9 @@ PYDART2_ODE_FOUND = \
 print("PYDART2_ODE_FOUND = %s" % PYDART2_ODE_FOUND)
 print("------------------------")
 
-CXX_FLAGS = '-Wall -msse2 -fPIC -std=c++11 -Xlinker -rpath /usr/local/lib '
+CXX_FLAGS = '-Wall -msse2 -fPIC -std=c++14 -Xlinker -rpath /usr/local/lib '
 if _platform == 'darwin':
-    CXX_FLAGS = '-Wall -msse2 -fPIC -std=c++11 '
+    CXX_FLAGS = '-Wall -msse2 -fPIC -std=c++14 '
 
 if _platform == 'linux' or _platform == 'linux2':
     CXX_FLAGS += '-O3 -DNDEBUG -shared '
