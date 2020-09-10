@@ -263,12 +263,33 @@ void SKEL(getInvMassMatrix)(int wid, int skid, double* outm, int nrows, int ncol
     write_matrix(skel->getInvMassMatrix(), outm);
 }
 
+////////////////////////////////////////
+// Skeleton::PD Functions
+void SKEL(getSimplePDForces)(int wid, int skid, double kp, double kd, double* inv1, int indofs1, double* outv, int ndofs) {
+    dart::dynamics::SkeletonPtr skel = GET_SKELETON(wid, skid);
+    double kd_h = kd * h;
+    Eigen::VectorXd dq = skel->getVelocities();
+
+    //TODO:
+    // compute skel submass tree
+
+    Eigen::VectorXd tau = kp * (skel->getPositionDifferences(read(inv1, indofs1), skel->getPositions()) - h * dq) -  kd * dq;
+    tau.head(6).setZero();
+
+    write(tau, outv);
+}
+
 void SKEL(getStablePDForces)(int wid, int skid, double h, double kp, double kd, double* inv1, int indofs1, double* outv, int ndofs) {
     dart::dynamics::SkeletonPtr skel = GET_SKELETON(wid, skid);
     double kd_h = kd * h;
     Eigen::VectorXd dq = skel->getVelocities();
 
-    Eigen::VectorXd p_d = kp * (skel->getPositionDifferences(read(inv1, indofs1), skel->getPositions()) - h * dq) -  kd * dq;
+    Eigen::VectorXd q_des = read(inv1, indofs1);
+    Eigen::VectorXd q = skel->getPositions();
+    q_des.head(6).setZero();
+    q.head(6).setZero();
+
+    Eigen::VectorXd p_d = kp * (skel->getPositionDifferences(q_des, q) - h * dq) -  kd * dq;
     p_d.head(6).setZero();
     Eigen::MatrixXd skel_identity = Eigen::MatrixXd::Identity(ndofs, ndofs);
     skel_identity.block<6,6>(0, 0).setZero();

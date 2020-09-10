@@ -407,6 +407,10 @@ class Skeleton(object):
     @property
     def tau_upper(self):
         return self.force_upper_limits()
+    
+    def get_simple_pd(self, q_des, kp, kd):
+        return papi.skeleton__getSimplePDForces(self.world.id,
+                                                self.id, kp, kd, q_des, self.ndofs)
 
     def get_spd(self, q_des, h, kp, kd):
         return papi.skeleton__getStablePDForces(self.world.id,

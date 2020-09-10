@@ -73,7 +73,8 @@ void SKEL(getConstraintForces)(int wid, int skid, double* outv, int ndofs);
 void SKEL(getInvMassMatrix)(int wid, int skid, double* outm, int nrows, int ncols);
 
 ////////////////////////////////////////
-// Skeleton::Stable PD Functions
+// Skeleton::PD Functions
+void SKEL(getSimplePDForces)(int wid, int skid, double kp, double kd, double* inv1, int indofs1, double* outv, int ndofs);
 void SKEL(getStablePDForces)(int wid, int skid, double h, double kp, double kd, double* inv1, int indofs1, double* outv, int ndofs);
 void SKEL(getStablePDForcesExtended)(int wid, int skid, double h,
                             double* inv1, int indofs1,
