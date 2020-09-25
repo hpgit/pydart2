@@ -483,6 +483,13 @@ class Skeleton(object):
     # def contacted_body_names(self):
     #     return [body.name for body in self.contacted_bodies()]
 
+    def add_box(self, name, size, color):
+        papi.skeleton__addBox(self.world.id, self.id, name, size, color)
+        self.build()
+    
+    def set_box_size(self, name, size):
+        papi.skeleton__setBox(self.world.id, self.id, name, size)
+
     def render(self):
         papi.skeleton__render(self.world.id, self.id)
 

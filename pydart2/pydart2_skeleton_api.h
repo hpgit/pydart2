@@ -89,4 +89,9 @@ void SKEL(getSimpleStablePDForcesExtended)(int wid, int skid, double h,
                                      double* outv, int ndofs);
 
 
+////////////////////////////////////////
+// Skeleton::AddBody Functions
+void SKEL(addBox)(int wid, int skid, const char * const name, double inv3[3], double inv3_2[3]);
+void SKEL(setBox)(int wid, int skid, const char * const name, double inv3[3]);
+
 #endif // #ifndef PYDART2_SKELETON_API_H

@@ -341,3 +341,38 @@ void SKEL(getSimpleStablePDForcesExtended)(int wid, int skid, double h, double* 
 
     write(tau, outv);
 }
+
+
+void SKEL(addBox)(int wid, int skid, const char * const name, double inv3[3], double inv3_2[3]) {
+    dart::dynamics::SkeletonPtr skel = GET_SKELETON(wid, skid);
+    Eigen::Vector3d box_size = read(inv3, 3);
+    Eigen::Vector3d box_color = read(inv3_2, 3);
+
+    dart::dynamics::BodyNodePtr ground = skel->getBodyNode(0);
+    Eigen::Isometry3d j_t_p = ground->getWorldTransform();
+
+    dart::dynamics::FreeJoint::Properties props;
+
+	props.mName = name;
+	props.mT_ParentBodyToJoint = j_t_p.inverse();
+	props.mT_ChildBodyToJoint = Eigen::Isometry3d::Identity();
+	props.mIsPositionLimitEnforced = false;
+
+    dart::dynamics::ShapePtr box_shape = std::make_shared<dart::dynamics::BoxShape>(box_size);
+    dart::dynamics::BodyNodePtr bn = skel->createJointAndBodyNodePair<dart::dynamics::FreeJoint>(
+        ground, props, dart::dynamics::BodyNode::AspectProperties(name) 
+    ).second;
+
+    bn->createShapeNodeWith<dart::dynamics::VisualAspect, dart::dynamics::CollisionAspect, dart::dynamics::DynamicsAspect>(box_shape);
+    bn->getShapeNodesWith<dart::dynamics::VisualAspect>().back()->getVisualAspect()->setColor(box_color);
+}
+
+void SKEL(setBox)(int wid, int skid, const char * const name, double inv3[3]) {
+    dart::dynamics::SkeletonPtr skel = GET_SKELETON(wid, skid);
+    Eigen::Vector3d box_size = read(inv3, 3);
+
+    dart::dynamics::BodyNodePtr bn = skel->getBodyNode(std::string(name));
+    dynamic_cast<dart::dynamics::BoxShape*>(bn->getShapeNodesWith<dart::dynamics::VisualAspect>().back()->getShape().get())->setSize(box_size);
+    dynamic_cast<dart::dynamics::BoxShape*>(bn->getShapeNodesWith<dart::dynamics::DynamicsAspect>().back()->getShape().get())->setSize(box_size);
+    dynamic_cast<dart::dynamics::BoxShape*>(bn->getShapeNodesWith<dart::dynamics::CollisionAspect>().back()->getShape().get())->setSize(box_size);
+}
