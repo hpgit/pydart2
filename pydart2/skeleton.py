@@ -490,6 +490,12 @@ class Skeleton(object):
     def set_box_size(self, name, size):
         papi.skeleton__setBox(self.world.id, self.id, name, size)
 
+    def clear_impulse(self, ):
+        papi.skeleton__clearImpulse(self.world.id, self.id)
+
+    def update_fk(self, ):
+        papi.skeleton__computeForwardKinematics(self.world.id, self.id)
+
     def render(self):
         papi.skeleton__render(self.world.id, self.id)
 

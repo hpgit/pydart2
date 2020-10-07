@@ -94,4 +94,7 @@ void SKEL(getSimpleStablePDForcesExtended)(int wid, int skid, double h,
 void SKEL(addBox)(int wid, int skid, const char * const name, double inv3[3], double inv3_2[3]);
 void SKEL(setBox)(int wid, int skid, const char * const name, double inv3[3]);
 
+void SKEL(clearImpulse)(int wid, int skid);
+void SKEL(computeForwardKinematics)(int wid, int skid);
+
 #endif // #ifndef PYDART2_SKELETON_API_H

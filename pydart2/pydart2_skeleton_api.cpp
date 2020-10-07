@@ -376,3 +376,15 @@ void SKEL(setBox)(int wid, int skid, const char * const name, double inv3[3]) {
     dynamic_cast<dart::dynamics::BoxShape*>(bn->getShapeNodesWith<dart::dynamics::DynamicsAspect>().back()->getShape().get())->setSize(box_size);
     dynamic_cast<dart::dynamics::BoxShape*>(bn->getShapeNodesWith<dart::dynamics::CollisionAspect>().back()->getShape().get())->setSize(box_size);
 }
+
+void SKEL(clearImpulse)(int wid, int skid) {
+    dart::dynamics::SkeletonPtr skel = GET_SKELETON(wid, skid);
+    skel->clearConstraintImpulses();
+    skel->clearInternalForces();
+    skel->clearExternalForces();
+}
+
+void SKEL(computeForwardKinematics)(int wid, int skid) {
+    dart::dynamics::SkeletonPtr skel = GET_SKELETON(wid, skid);
+    skel->computeForwardKinematics(true, false, false);
+}
