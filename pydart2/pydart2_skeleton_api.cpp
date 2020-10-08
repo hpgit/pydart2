@@ -265,6 +265,11 @@ void SKEL(getInvMassMatrix)(int wid, int skid, double* outm, int nrows, int ncol
 
 ////////////////////////////////////////
 // Skeleton::PD Functions
+void SKEL(setSPDTarget)(int wid, int skid, double kp, double kd, double* inv1, int indofs1) {
+    dart::dynamics::SkeletonPtr skel = GET_SKELETON(wid, skid);
+    skel->setSPDTarget(read(inv1, indofs1), kp, kd);
+}
+
 void SKEL(getSimplePDForces)(int wid, int skid, double h, double kp, double kd, double* inv1, int indofs1, double* outv, int ndofs) {
     dart::dynamics::SkeletonPtr skel = GET_SKELETON(wid, skid);
     Eigen::VectorXd dq = skel->getVelocities();
