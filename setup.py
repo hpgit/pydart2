@@ -7,6 +7,14 @@ import glob
 import os.path
 
 
+try:
+    from numpy.distutils.ccompiler import CCompiler_compile
+    import distutils.ccompiler
+    distutils.ccompiler.CCompiler.compile = CCompiler_compile
+except ImportError:
+    print("Numpy not found, parallel compile not available")
+
+
 def check_file(directories, file):
     print("> search... %s" % file)
     for directory in directories:
