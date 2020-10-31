@@ -374,6 +374,10 @@ class Skeleton(object):
     def set_spd_target(self, _target, kp, kd):
         papi.skeleton__setSPDTarget(self.world.id, self.id, kp, kd, _target)
 
+    def get_spd_forces(self, q_des, kp, kd):
+        return papi.skeleton__getSPDForces(self.world.id,
+                                                self.id, q_des, kp, kd, self.ndofs)
+
     @tau.setter
     def tau(self, _tau):
         self.set_forces(_tau)
