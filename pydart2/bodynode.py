@@ -262,9 +262,11 @@ class BodyNode(object):
         return (self.T.dot(x_))[:3]
 
     def to_local(self, x):
-        Tinv = np.linalg.inv(self.T)
-        x_ = np.append(x, [1.0])
-        return (Tinv.dot(x_))[:3]
+        T = self.transform()
+        return T[:3, :3].T.dot(np.asarray(x)-T[:3, 3])
+        # Tinv = np.linalg.inv(self.T)
+        # x_ = np.append(x, [1.0])
+        # return (Tinv.dot(x_))[:3]
 
     def world_transform(self, ):
         """Get the transform of this Frame with respect to the World Frame.

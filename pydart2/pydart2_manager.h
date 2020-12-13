@@ -17,6 +17,7 @@
 //#include "dart/io/io.hpp"
 //#include "dart/io/urdf/DartLoader.hpp"
 
+#include "BallJointConstraintV2.h"
 #include "NonHolonomicContactConstraint.h"
 #include "NonHolonomicContactConstraint_v2.h"
 
@@ -41,6 +42,10 @@ public:
     static int createWorldFromSkelXML(const std::string &xmlstr);
     static void destroyWorld(int id);
 
+    static int createBJConstraint(int wid, int skid, int bid, const Eigen::Vector3d& jointPos);
+    static dart::constraint::BallJointConstraintV2Ptr bjconstraint(int index);
+    static int bjconstraint_wid(int index);
+
     static int createNHCConstraint(int wid, int skid, int bid, const Eigen::Vector3d& offset);
     static dart::constraint::NonHolonomicContactConstraintPtr nhconstraint(int index);
     static int nhconstraint_wid(int index);
@@ -58,6 +63,12 @@ protected:
     // std::vector<dart::simulation::WorldPtr> worlds;
     int next_id;
     std::map<int, dart::simulation::WorldPtr> worlds;
+
+    int next_bjconstraint_id;
+    std::map<int, dart::constraint::BallJointConstraintV2Ptr> bjconstraints;
+    std::vector<int> bjconstraints_wid;
+    std::vector<int> bjconstraints_skid;
+
     int next_nhconstraint_id;
     std::map<int, dart::constraint::NonHolonomicContactConstraintPtr> nhconstraints;
     std::vector<int> nhconstraints_wid;

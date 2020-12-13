@@ -121,13 +121,15 @@ void JOINT(getTransformFromChildBodyNode)(int wid, int skid, int jid, double out
 // Joint::Limit Functions
 void JOINT(setPositionLimitEnforced)(int wid, int skid, int jid, bool _isPositionLimitEnforced) {
     dart::dynamics::JointPtr joint = GET_JOINT(wid, skid, jid);
-    joint->setPositionLimitEnforced(_isPositionLimitEnforced);
+    // joint->setPositionLimitEnforced(_isPositionLimitEnforced);
+    joint->setLimitEnforcement(_isPositionLimitEnforced);
 }
 
 
 bool JOINT(isPositionLimitEnforced)(int wid, int skid, int jid) {
     dart::dynamics::JointPtr joint = GET_JOINT(wid, skid, jid);
-    return joint->isPositionLimitEnforced();
+    // return joint->isPositionLimitEnforced();
+    return joint->areLimitsEnforced();
 }
 
 

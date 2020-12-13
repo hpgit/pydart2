@@ -23,6 +23,29 @@ class BallJointConstraint(object):
                                     self.body2.id,
                                     self.jointPos)
 
+class BallJointConstraintV2(object):
+    def __init__(self, body, jointPos):
+        self.body = body
+        self.jointPos = jointPos
+        self.id = papi.createBallJointConstraint(body.wid, body.skid, body.id, jointPos)
+        self.added = False
+    
+    def add_to_world(self, world):
+        if not self.added:
+            self.added = True
+            papi.addBallJointConstraint(self.id)
+    
+    def activate(self, _activate=True):
+        papi.setBallJointConstraintActivate(self.id, _activate)
+
+    def remove_from_world(self, world):
+        if self.added:
+            self.added = False
+            papi.removeBallJointConstraint(self.id)
+
+    def set_joint_pos(self, pos):
+        papi.setBallJointConstraintJointPos(self.id, pos)
+
 
 class NonHolonomicContactConstraint(object):
     def __init__(self, body1, offset):

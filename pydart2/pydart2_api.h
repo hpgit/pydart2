@@ -44,8 +44,14 @@ void COLLISION_RESULT(renderContact)(double inv6[6], double size, double scale);
 
 ////////////////////////////////////////////////////////////////////////////////
 // Constraints
-int addBallJointConstraint(int wid, int skid1, int bid1, int skid2, int bid2,
+int _addBallJointConstraint(int wid, int skid1, int bid1, int skid2, int bid2,
                            double inv3[3]);
+
+int createBallJointConstraint(int wid, int skid, int bid, double inv3[3]);
+int addBallJointConstraint(int bjcid);
+int removeBallJointConstraint(int bjcid);
+int setBallJointConstraintActivate(int bjcid, bool activate);
+int setBallJointConstraintJointPos(int bjcid, double inv3[3]);
 
 int createNonHolonomicContactConstraint(int wid, int skid, int bid, double inv3[3]);
 int addNonHolonomicContactConstraint(int nhcid);

@@ -17,14 +17,14 @@ namespace dart {
         NonHolonomicContactConstraint::NonHolonomicContactConstraint(dart::dynamics::BodyNode *_body,
                                                                     const Eigen::Vector3d &offsetOnBodyCoord)
                  :JointConstraint(_body),
+                bActive(false),
                 mOffset1(offsetOnBodyCoord),
                 mOffset2(Eigen::Vector3d::Zero()),
-                mViolation(0.),
                 mDesiredProjectedVector(Eigen::Vector3d(1., 0, 0)),
-                mAppliedImpulseIndex(0),
-                bActive(false),
+                mViolation(0.),
                 dViolationAngleIgnoreThreshold(0.),
-                dLengthForViolationIgnore(0.)
+                dLengthForViolationIgnore(0.),
+                mAppliedImpulseIndex(0)
         {
             mDim = 1;
 

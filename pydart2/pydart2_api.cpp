@@ -151,7 +151,7 @@ void COLLISION_RESULT(renderContact)(double inv6[6], double size, double scale) 
 
 ////////////////////////////////////////////////////////////////////////////////
 // Constraints
-int addBallJointConstraint(int wid, int skid1, int bid1, int skid2, int bid2,
+int _addBallJointConstraint(int wid, int skid1, int bid1, int skid2, int bid2,
                            double inv3[3]) {
     dart::simulation::WorldPtr world = GET_WORLD(wid);
     dart::dynamics::BodyNodePtr bd1 = GET_BODY(wid, skid1, bid1);
@@ -165,6 +165,46 @@ int addBallJointConstraint(int wid, int skid1, int bid1, int skid2, int bid2,
     world->getConstraintSolver()->addConstraint(cl);
     return 0;
 }
+
+int createBallJointConstraint(int wid, int skid, int bid, double inv3[3])
+{
+    Eigen::Vector3d jointPos = read(inv3, 3);
+    return Manager::createBJConstraint(wid, skid, bid, jointPos);
+}
+
+int addBallJointConstraint(int bjcid)
+{
+    int wid = Manager::bjconstraint_wid(bjcid);
+    dart::simulation::WorldPtr world = GET_WORLD(wid);
+    world->getConstraintSolver()->addConstraint(Manager::bjconstraint(bjcid));
+
+    return 0;
+}
+
+int removeBallJointConstraint(int bjcid)
+{
+    int wid = Manager::bjconstraint_wid(bjcid);
+    dart::simulation::WorldPtr world = GET_WORLD(wid);
+    world->getConstraintSolver()->removeConstraint(Manager::bjconstraint(bjcid));
+
+    return 0;
+}
+
+int setBallJointConstraintJointPos(int bjcid, double inv3[3])
+{
+    // dart::constraint::BallJointConstraintPtr cl = Manager::bjconstraint(bjcid);
+    Eigen::Vector3d jointPos = read(inv3, 3);
+    Manager::bjconstraint(bjcid)->setJointPos(jointPos);
+    return 0;
+}
+
+int setBallJointConstraintActivate(int bjcid, bool activate)
+{
+    dart::constraint::BallJointConstraintV2Ptr cl = Manager::bjconstraint(bjcid);
+    cl->activate(activate);
+    return 0;
+}
+
 
 int createNonHolonomicContactConstraint(int wid, int skid, int bid, double inv3[3])
 {

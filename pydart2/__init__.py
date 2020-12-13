@@ -18,7 +18,7 @@ from .skeleton import Skeleton
 from .shapenode import ShapeNode
 from .marker import Marker
 from .contact import Contact
-from .constraints import BallJointConstraint
+from .constraints import BallJointConstraintV2, NonHolonomicContactConstraintV2
 from .collision_result import CollisionResult
 from .shape import Shape, SoftMeshShape, BoxShape, SphereShape, CylinderShape, EllipsoidShape, LineSegmentShape, PlaneShape, MeshShape
 

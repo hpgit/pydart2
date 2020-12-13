@@ -124,6 +124,30 @@ void Manager::destroyWorld(int id) {
     MSG << " [pydart2_api] Destroy world OK: " << id << "\n";
 }
 
+int Manager::createBJConstraint(int wid, int skid, int bid, const Eigen::Vector3d& jointPos)
+{
+    Manager* manager = getInstance();
+    int id = manager->next_bjconstraint_id++;
+    dart::dynamics::BodyNodePtr bd = skeleton(wid, skid)->getBodyNode(bid);
+    dart::constraint::BallJointConstraintV2Ptr cl =
+            std::make_shared<dart::constraint::BallJointConstraintV2>(bd, jointPos);
+    manager->bjconstraints[id] = cl;
+    manager->bjconstraints_wid.push_back(wid);
+
+    return id;
+}
+
+dart::constraint::BallJointConstraintV2Ptr Manager::bjconstraint(int index)
+{
+    return getInstance()->bjconstraints[index];
+}
+
+int Manager::bjconstraint_wid(int index)
+{
+    return getInstance()->bjconstraints_wid[index];
+}
+
+
 int Manager::createNHCConstraint(int wid, int skid, int bid, const Eigen::Vector3d& offset)
 {
     Manager* manager = getInstance();
